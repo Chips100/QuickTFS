@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">QuickTFS</string>
+
+    <!-- Strings related to login -->
+    <string name="loginButtonText">Login</string>
+    <string name="loginUserNameHint">User Name</string>
+    <string name="loginPasswordHint">Password</string>
+</resources>
