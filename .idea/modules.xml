@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/QuickTFS.iml" filepath="$PROJECT_DIR$/QuickTFS.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quicktfs.apiclients.contracts/quicktfs.apiclients.contracts.iml" filepath="$PROJECT_DIR$/quicktfs.apiclients.contracts/quicktfs.apiclients.contracts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quicktfs.apiclients.restapi/quicktfs.apiclients.restapi.iml" filepath="$PROJECT_DIR$/quicktfs.apiclients.restapi/quicktfs.apiclients.restapi.iml" />
     </modules>
   </component>
 </project>

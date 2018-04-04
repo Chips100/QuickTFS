@@ -7,10 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import quicktfs.apiclients.restapi.RestApiLoginClient;
+
 /**
  * A login screen that offers login via User Name / Password.
  */
 public class LoginActivity extends AppCompatActivity {
+    private RestApiLoginClient loginClient;
+
     // UI references.
     private EditText userNameEditText;
     private EditText passwordEditText;
@@ -21,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginClient = new RestApiLoginClient("Test");
 
         // Set up the login form.
         userNameEditText = (EditText) findViewById(R.id.loginUserName);
@@ -34,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
         Toast.makeText(this, "Login mit: " + userName + "/" + password, Toast.LENGTH_LONG).show();
         setLoadingState(true);
+        loginClient.tryLogin(userName, password);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
