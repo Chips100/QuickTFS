@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/quicktfs.apiclients.contracts" />
             <option value="$PROJECT_DIR$/quicktfs.apiclients.restapi" />
+            <option value="$PROJECT_DIR$/quicktfs.utilities" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

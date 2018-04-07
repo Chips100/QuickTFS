@@ -32,4 +32,12 @@ public class RestApiWorkItemQueryClient extends RestApiClientBase implements Wor
 
         return new WorkItemDetailsDto(id, "Titel " + id, "Description " + id);
     }
+
+    /**
+     * Should be overridden to return a component
+     * that provides login data to the API calls.
+     * @return An instance of RestApiLogin to provide login data to the API calls.
+     */
+    @Override
+    protected RestApiLogin getLogin() { return login; }
 }

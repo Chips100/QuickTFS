@@ -1,41 +1,31 @@
 package quicktfs.app.login;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import quicktfs.apiclients.contracts.ApiAccessException;
 import quicktfs.apiclients.contracts.LoginClient;
+import quicktfs.app.AsyncApiClientTask;
 
 /**
  * A task for performing a login asynchronously.
  */
-abstract class AsyncLoginTask extends AsyncTask<AsyncLoginTask.LoginParams, Void, AsyncLoginTask.LoginResult> {
+abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginParams, AsyncLoginTask.LoginResult> {
     private final LoginClient client;
 
     /**
      * Creates an AsyncLoginTask.
      * @param client Client to use for logging in.
      */
-    AsyncLoginTask(LoginClient client) {
+    AsyncLoginTask(Context context, LoginClient client) {
+        super(context);
         this.client = client;
     }
 
     @Override
-    protected LoginResult doInBackground(LoginParams... loginParams) {
-        if (loginParams == null || loginParams.length != 1) {
-            throw new IllegalArgumentException("loginParams");
-        }
-
-        LoginParams params = loginParams[0];
-        boolean result = client.tryLogin(params.getUsername(), params.getPassword());
+    protected LoginResult doApiAction(LoginParams loginParams) throws ApiAccessException {
+        boolean result = client.tryLogin(loginParams.getUsername(), loginParams.getPassword());
         return new LoginResult(result);
     }
-
-    /**
-     * Should be overridden to define the handling of a completed login.
-     * @param result Result of the login operation.
-     */
-    @Override
-    protected abstract void onPostExecute(LoginResult result);
-
 
     /**
      * Represents parameters for performing a login.

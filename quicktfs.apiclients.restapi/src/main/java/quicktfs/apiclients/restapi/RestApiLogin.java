@@ -1,10 +1,14 @@
 package quicktfs.apiclients.restapi;
 
-import quicktfs.apiclients.contracts.LoginClient;
+import com.squareup.okhttp.OkHttpClient;
 
 /**
- * Login provider specific to the TFS HTTP Rest API.
- * More specific version of the general LoginClient interface.
+ * Provides login data for accessing the TFS Rest API.
  */
-public interface RestApiLogin extends LoginClient {
+public interface RestApiLogin {
+    /**
+     * Configures the login data for the specified client.
+     * @param client Client that will be used for accessing the TFS Rest API.
+     */
+    void configureLogin(OkHttpClient client);
 }

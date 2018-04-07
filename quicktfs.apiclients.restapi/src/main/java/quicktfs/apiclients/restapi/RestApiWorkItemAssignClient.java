@@ -28,4 +28,12 @@ public class RestApiWorkItemAssignClient extends RestApiClientBase implements Wo
             Thread.sleep(3000);
         } catch(Exception exception) {}
     }
+
+    /**
+     * Should be overridden to return a component
+     * that provides login data to the API calls.
+     * @return An instance of RestApiLogin to provide login data to the API calls.
+     */
+    @Override
+    protected RestApiLogin getLogin() { return login; }
 }

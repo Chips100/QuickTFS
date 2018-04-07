@@ -10,5 +10,5 @@ public interface LoginClient {
      * @param password Password of the account to use for logging in.
      * @return True, if the login was successful; otherwise false.
      */
-    boolean tryLogin(String username, String password);
+    boolean tryLogin(String username, String password) throws ApiAccessException;
 }

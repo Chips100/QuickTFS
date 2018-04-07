@@ -9,10 +9,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import quicktfs.apiclients.contracts.LoginClient;
-import quicktfs.apiclients.restapi.RestApiLoginClient;
 import quicktfs.app.IocContainerStub;
 import quicktfs.app.R;
-import quicktfs.app.workItemDetails.WorkItemDetailsActivity;
+import quicktfs.app.home.HomeActivity;
 
 /**
  * A login screen that offers login via User Name / Password.
@@ -45,9 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         setLoadingState(true);
-        new AsyncLoginTask(loginClient) {
+        new AsyncLoginTask(this, loginClient) {
             @Override
-            protected void onPostExecute(LoginResult result) {
+            protected void handleSuccess(LoginResult result) {
                 LoginActivity context = LoginActivity.this;
                 context.setLoadingState(false);
 
@@ -62,9 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLoginSuccess() {
-        Intent intent = new Intent(this, WorkItemDetailsActivity.class);
-        intent.putExtra(WorkItemDetailsActivity.INTENT_WORKITEM_ID, 55);
-        startActivity(intent);
+        startActivity(new Intent(this, HomeActivity.class));
     }
 
     private void setLoadingState(boolean isLoading) {

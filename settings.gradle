@@ -1,1 +1,1 @@
-include ':app', ':quicktfs.apiclients.contracts', ':quicktfs.apiclients.restapi'
+include ':app', ':quicktfs.apiclients.contracts', ':quicktfs.apiclients.restapi', ':quicktfs.utilities'
