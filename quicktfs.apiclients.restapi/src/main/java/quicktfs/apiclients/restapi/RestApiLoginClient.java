@@ -1,13 +1,9 @@
 package quicktfs.apiclients.restapi;
 
-import android.widget.Toast;
-
-import quicktfs.apiclients.contracts.LoginClient;
-
 /**
  * Client that allows logging in to a TFS Api using the HTTP Rest API.
  */
-public class RestApiLoginClient extends RestApiClientBase implements LoginClient {
+public class RestApiLoginClient extends RestApiClientBase implements RestApiLogin {
     /**
      * Creates a RestApiLoginClient.
      * @param restApiUrl The URL of the TFS HTTP Rest API.
@@ -24,6 +20,10 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
      */
     @Override
     public boolean tryLogin(String username, String password) {
-        return false;
+        try {
+            Thread.sleep(3000);
+        } catch(Exception exception) {}
+
+        return username.equals("Dennis") && password.equals("Dennis");
     }
 }

@@ -7,12 +7,16 @@ import quicktfs.apiclients.contracts.WorkItemQueryClient;
  * Client that allows querying Work Items using the HTTP Rest API.
  */
 public class RestApiWorkItemQueryClient extends RestApiClientBase implements WorkItemQueryClient {
+    private final RestApiLogin login;
+
     /**
      * Creates a RestApiLoginClient.
      * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param login Login provider for the TFS HTTP Rest API.
      */
-    public RestApiWorkItemQueryClient(String restApiUrl) {
+    public RestApiWorkItemQueryClient(String restApiUrl, RestApiLogin login) {
         super(restApiUrl);
+        this.login = login;
     }
 
     /**
@@ -22,6 +26,10 @@ public class RestApiWorkItemQueryClient extends RestApiClientBase implements Wor
      */
     @Override
     public WorkItemDetailsDto queryById(int id) {
+        try {
+            Thread.sleep(3000);
+        } catch(Exception exception) {}
+
         return new WorkItemDetailsDto(id, "Titel " + id, "Description " + id);
     }
 }

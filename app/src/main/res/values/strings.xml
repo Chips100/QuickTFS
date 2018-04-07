@@ -5,4 +5,10 @@
     <string name="loginButtonText">Login</string>
     <string name="loginUserNameHint">User Name</string>
     <string name="loginPasswordHint">Password</string>
+    <string name="loginFailedMessage">Login failed.</string>
+
+    <!-- Strings related to Work Item Details -->
+    <string name="title_activity_work_item_details">Work Item Details</string>
+    <string name="workItemDetailsAssignMe">Assign to me</string>
+    <string name="workItemDetailsAssignMeSuccessMessage">Work Item successfully assigned.</string>
 </resources>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="quicktfs.app.LoginActivity">
+    tools:context="quicktfs.app.login.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
