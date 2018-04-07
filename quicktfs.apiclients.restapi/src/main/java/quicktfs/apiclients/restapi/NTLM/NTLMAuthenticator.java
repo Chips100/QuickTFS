@@ -23,7 +23,7 @@ public class NTLMAuthenticator implements Authenticator {
     // We keep track of the attempted retries to abort after a specified maximum number.
     // Otherwise, the authenticator would retry infinitely with wrong credentials.
     private int retryCount = 0;
-    private final int maxRetryCount = 5;
+    private final int maxRetryCount = 2;
 
     public NTLMAuthenticator(String username, String password, String domain) {
         this.domain = domain;

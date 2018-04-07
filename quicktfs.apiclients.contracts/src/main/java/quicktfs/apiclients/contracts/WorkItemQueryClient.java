@@ -9,5 +9,5 @@ public interface WorkItemQueryClient {
      * @param id ID of the Work Item.
      * @return The Work Item with the specified ID; or null if it does not exist.
      */
-    WorkItemDetailsDto queryById(int id);
+    WorkItemDetailsDto queryById(int id) throws ApiAccessException;
 }

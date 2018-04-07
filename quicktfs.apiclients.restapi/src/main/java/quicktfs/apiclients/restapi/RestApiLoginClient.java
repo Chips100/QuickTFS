@@ -48,7 +48,7 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
 
         try {
             // Try an API call with the specified credentials.
-            callApiGet("projects?stateFilter=All&api-version=1.0");
+            callApiGet("projects?stateFilter=All&api-version=1.0", LoginResponse.class);
             return true;
         }
         catch(ApiAccessException exception) {
@@ -67,4 +67,6 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
     public void configureLogin(OkHttpClient client) {
         client.setAuthenticator(new NTLMAuthenticator(username, password, domain));
     }
+
+    public static class LoginResponse { }
 }

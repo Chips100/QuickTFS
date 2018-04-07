@@ -55,9 +55,9 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
     public void loadWorkItem() {
         setLoadingState(true);
 
-        new AsyncLoadWorkItemTask(workItemQueryClient) {
+        new AsyncLoadWorkItemTask(this, workItemQueryClient) {
             @Override
-            protected void onPostExecute(LoadWorkItemResult result) {
+            protected void handleSuccess(LoadWorkItemResult result) {
                 WorkItemDetailsActivity context = WorkItemDetailsActivity.this;
 
                 context.displayWorkItem(result.getWorkItem());

@@ -1,5 +1,8 @@
 package quicktfs.apiclients.restapi;
 
+import java.util.Map;
+
+import quicktfs.apiclients.contracts.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
 
@@ -25,12 +28,13 @@ public class RestApiWorkItemQueryClient extends RestApiClientBase implements Wor
      * @return The Work Item with the specified ID; or null if it does not exist.
      */
     @Override
-    public WorkItemDetailsDto queryById(int id) {
-        try {
-            Thread.sleep(3000);
-        } catch(Exception exception) {}
+    public WorkItemDetailsDto queryById(int id) throws ApiAccessException {
+        WorkItemDetailsResponse response
+                = callApiGet("wit/workitems/" + String.valueOf(id), WorkItemDetailsResponse.class);
 
-        return new WorkItemDetailsDto(id, "Titel " + id, "Description " + id);
+        return new WorkItemDetailsDto(id,
+            response.fields.get("System.Title"),
+            response.fields.get("System.Description"));
     }
 
     /**
@@ -40,4 +44,8 @@ public class RestApiWorkItemQueryClient extends RestApiClientBase implements Wor
      */
     @Override
     protected RestApiLogin getLogin() { return login; }
+
+    public static class WorkItemDetailsResponse {
+        public Map<String, String> fields;
+    }
 }

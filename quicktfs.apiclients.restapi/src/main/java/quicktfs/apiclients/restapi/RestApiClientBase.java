@@ -1,5 +1,7 @@
 package quicktfs.apiclients.restapi;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -12,6 +14,7 @@ import quicktfs.apiclients.restapi.SSL.CustomSSLCertificates;
  * Base class for Clients using the TFS HTTP Rest API.
  */
 abstract class RestApiClientBase {
+    private final Gson gson = new GsonBuilder().create();
     private final String restApiUrl;
 
     /**
@@ -35,20 +38,21 @@ abstract class RestApiClientBase {
      * @return The result returned from the Api.
      * @throws ApiAccessException Thrown if any errors occur by accessing the Api.
      */
-    String callApiGet(String apiUrl) throws ApiAccessException {
+    <T> T callApiGet(String apiUrl, Class<T> responseClass) throws ApiAccessException {
         return executeRequest(new Request.Builder()
                 .url(restApiUrl + apiUrl)
                 .get()
-                .build());
+                .build(), responseClass);
     }
 
-    private String executeRequest(Request request) throws ApiAccessException {
+    private <T> T executeRequest(Request request, Class<T> responseClass) throws ApiAccessException {
         try {
             OkHttpClient client = createHttpClient();
             Call call = client.newCall(request);
             Response response = call.execute();
+            String responseBody = response.body().string();
 
-            return response.body().string();
+            return gson.fromJson(responseBody, responseClass);
         }
         catch(Exception exception) {
             throw new ApiAccessException(exception);

@@ -31,4 +31,5 @@ dependencies {
     compile project(':quicktfs.apiclients.contracts')
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile project(':quicktfs.utilities')
+    compile 'com.google.code.gson:gson:2.2.4'
 }

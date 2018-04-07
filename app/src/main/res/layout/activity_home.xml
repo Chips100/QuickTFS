@@ -15,7 +15,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:hint="@string/homeSearchWorkItemHint"/>
+        android:hint="@string/homeSearchWorkItemHint"
+        android:text="12620"/>
 
     <Button
         android:layout_width="wrap_content"

@@ -1,41 +1,32 @@
 package quicktfs.app.workItemDetails;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import quicktfs.apiclients.contracts.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
+import quicktfs.app.AsyncApiClientTask;
 
 /**
  * A task for loading the details of a Work Item asynchronously.
  */
-abstract class AsyncLoadWorkItemTask extends AsyncTask<AsyncLoadWorkItemTask.LoadWorkItemParams, Void, AsyncLoadWorkItemTask.LoadWorkItemResult> {
+abstract class AsyncLoadWorkItemTask extends AsyncApiClientTask<AsyncLoadWorkItemTask.LoadWorkItemParams, AsyncLoadWorkItemTask.LoadWorkItemResult> {
     private final WorkItemQueryClient client;
 
     /**
      * Creates an AsyncLoadWorkItemTask.
      * @param client Client to use for loading the Work Item.
      */
-    AsyncLoadWorkItemTask(WorkItemQueryClient client) {
+    AsyncLoadWorkItemTask(Context context, WorkItemQueryClient client) {
+        super(context);
         this.client = client;
     }
 
     @Override
-    protected LoadWorkItemResult doInBackground(LoadWorkItemParams... loadWorkItemParams) {
-        if (loadWorkItemParams == null || loadWorkItemParams.length != 1) {
-            throw new IllegalArgumentException("loadWorkItemParams");
-        }
-
-        LoadWorkItemParams params = loadWorkItemParams[0];
-        WorkItemDetailsDto workItem = client.queryById(params.getWorkItemId());
+    protected LoadWorkItemResult doApiAction(LoadWorkItemParams loadWorkItemParams) throws ApiAccessException {
+        WorkItemDetailsDto workItem = client.queryById(loadWorkItemParams.getWorkItemId());
         return new LoadWorkItemResult(workItem);
     }
-
-    /**
-     * Should be overridden to define the handling of the completed operation.
-     * @param result Result of the assign operation.
-     */
-    @Override
-    protected abstract void onPostExecute(LoadWorkItemResult result);
 
     /**
      * Represents parameters for loading the details of a Work Item.
