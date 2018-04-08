@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/loginDomainHint"
                 android:inputType="text"
-                android:text="DPAORINP"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
@@ -39,7 +38,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/loginUserNameHint"
                 android:inputType="text"
-                android:text="JaniakDe"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
@@ -53,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/loginPasswordHint"
                 android:inputType="textPassword"
-                android:text="*****"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 

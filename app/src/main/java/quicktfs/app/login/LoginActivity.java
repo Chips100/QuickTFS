@@ -12,12 +12,14 @@ import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.app.IocContainerStub;
 import quicktfs.app.R;
 import quicktfs.app.home.HomeActivity;
+import quicktfs.utilities.UiUtilities;
 
 /**
  * A login screen that offers login via User Name / Password.
  */
 public class LoginActivity extends AppCompatActivity {
     private LoginClient loginClient;
+    private LoginStore loginStore;
 
     // UI references.
     private EditText domainEditText;
@@ -31,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        loginStore = new LoginStore(this);
         loginClient = IocContainerStub.getDefaultInstance().getInstance(LoginClient.class);
 
         // Set up the login form.
@@ -39,10 +42,16 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.loginPassword);
         loginButton = (Button)findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.loginProgressBar);
+
+        // Restore remembered login data.
+        domainEditText.setText(loginStore.getDomain());
+        userNameEditText.setText(loginStore.getUsername());
+        passwordEditText.setText(loginStore.getPassword());
+        UiUtilities.focusFirstEmptyEditText(domainEditText, userNameEditText, passwordEditText);
     }
 
     public void login(View view) {
-        AsyncLoginTask.LoginParams loginParams = new AsyncLoginTask.LoginParams(
+        final AsyncLoginTask.LoginParams loginParams = new AsyncLoginTask.LoginParams(
             domainEditText.getText().toString(),
             userNameEditText.getText().toString(),
             passwordEditText.getText().toString()
@@ -64,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+                loginStore.storeLoginData(loginParams.getDomain(), loginParams.getUsername(), loginParams.getPassword());
                 context.onLoginSuccess();
             }
         }.execute(loginParams);

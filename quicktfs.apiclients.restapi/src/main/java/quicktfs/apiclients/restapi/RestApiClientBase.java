@@ -16,6 +16,7 @@ import quicktfs.apiclients.contracts.EntityNotFoundException;
 import quicktfs.apiclients.contracts.NotAuthenticatedException;
 import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
 import quicktfs.apiclients.restapi.SSL.CustomSSLCertificates;
+import quicktfs.utilities.StringUtilities;
 
 /**
  * Base class for Clients using the TFS HTTP Rest API.
@@ -31,7 +32,7 @@ public abstract class RestApiClientBase {
      * @param authentication Authentication for the TFS HTTP Rest API.
      */
     protected RestApiClientBase(String restApiUrl, AuthenticationState authentication) {
-        if (restApiUrl == null || restApiUrl.equals("")) throw new IllegalArgumentException("restApiUrl");
+        if (StringUtilities.isNullOrEmpty(restApiUrl)) throw new IllegalArgumentException("restApiUrl");
         if (authentication == null) throw new IllegalArgumentException("authentication");
 
         this.restApiUrl = restApiUrl;
