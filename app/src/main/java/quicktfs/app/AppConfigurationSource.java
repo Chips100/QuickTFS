@@ -1,14 +1,33 @@
 package quicktfs.app;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import quicktfs.apiclients.contracts.ConfigurationSource;
+import quicktfs.utilities.StringUtilities;
 
 /**
  * Source for configuration values in the Android App context.
  */
 public class AppConfigurationSource implements ConfigurationSource {
+    private static final String KEY_SETTINGS = "SettingsStore";
+    private static SharedPreferences preferences;
+    private static AppConfigurationSource instance = new AppConfigurationSource();
+
+    // Private constructor to enforce singleton usage.
+    private AppConfigurationSource() { }
+
+    /**
+     * Gets the singleton instance of AppConfigurationSource.
+     * @return Gets the singleton instance of AppConfigurationSource.
+     */
+    public static AppConfigurationSource getInstance() {
+        return instance;
+    }
+
     /**
      * Gets a configurable String value.
      * @param key Key of the configuration setting.
@@ -16,10 +35,7 @@ public class AppConfigurationSource implements ConfigurationSource {
      */
     @Override
     public String getString(String key) {
-        if (key.equals("TFS_URL")) {
-            return "https://tfs2.dataport.de/tfs_2/CCSE/";
-        }
-        return null;
+        return preferences.getString(key, null);
     }
 
     /**
@@ -29,13 +45,46 @@ public class AppConfigurationSource implements ConfigurationSource {
      */
     @Override
     public Set<String> getStringSet(String key) {
-        if (key.equals("TRUSTED_CERTIFICATES")) {
-            Set<String> set = new HashSet<>();
-            set.add(DataportCertificate);
-            return set;
-        }
+        return preferences.getStringSet(key, null);
+    }
 
-        return null;
+    /**
+     * Sets a value for a String configuration setting.
+     * @param key Key of the configuration setting.
+     * @param value Value to set for the configuration setting.
+     */
+    public void setString(String key, String value) {
+        preferences.edit().putString(key, value).apply();
+    }
+
+    /**
+     * Sets values for a String collection configuration setting.
+     * @param key Key of the configuration setting.
+     * @param values Values to set for the configuration setting.
+     */
+    public void setStringSet(String key, Set<String> values) {
+        preferences.edit().putStringSet(key, values).apply();
+    }
+
+    /**
+     * Initializes the AppConfigurationSource with the specified context.
+     * Required to gain access to the shared preferences via a context.
+     * @param context Context to initialize the AppConfigurationSource.
+     */
+    public void init(Context context) {
+        preferences = context.getSharedPreferences(KEY_SETTINGS, Context.MODE_PRIVATE);
+        initDataportDefaults();
+    }
+
+
+    private void initDataportDefaults() {
+        // Only initialize if no settings have been provided yet.
+        if (!StringUtilities.isNullOrEmpty(getString("TFS_URL"))) return;
+
+        setString("TFS_URL", "https://tfs2.dataport.de/tfs_2/CCSE/");
+        Set<String> set = new HashSet<>();
+        set.add(DataportCertificate);
+        setStringSet("TRUSTED_CERTIFICATES", set);
     }
 
     private final static String DataportCertificate

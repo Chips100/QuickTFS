@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import quicktfs.apiclients.contracts.LoginClient;
+import quicktfs.app.AppConfigurationSource;
 import quicktfs.app.IocContainerStub;
 import quicktfs.app.R;
 import quicktfs.app.home.HomeActivity;
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginStore = new LoginStore(this);
+        AppConfigurationSource.getInstance().init(this);
         loginClient = IocContainerStub.getInstance(LoginClient.class);
 
         // Set up the login form.

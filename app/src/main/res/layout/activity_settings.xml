@@ -4,11 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="quicktfs.app.settings.SettingsActivity">
+    tools:context="quicktfs.app.settings.SettingsActivity"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
 
-    <TextView
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SETTINGS"/>
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/settingsTfsUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/settingsTfsUrlHint"
+            android:inputType="textUri"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

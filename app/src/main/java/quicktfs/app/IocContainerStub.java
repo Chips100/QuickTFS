@@ -27,7 +27,7 @@ public class IocContainerStub {
     private synchronized static void init() {
         if (isInitialized) return;
 
-        configurationSource = new AppConfigurationSource();
+        configurationSource = AppConfigurationSource.getInstance();
         authenticationState = new RestApiAuthenticationState();
         loginClient = new RestApiLoginClient(configurationSource, authenticationState);
         workItemQueryClient = new RestApiWorkItemQueryClient(configurationSource, authenticationState);

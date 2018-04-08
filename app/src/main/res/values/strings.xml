@@ -10,6 +10,9 @@
     <string name="loginPasswordHint">Password</string>
     <string name="loginFailedMessage">Login failed.</string>
 
+    <!-- Strings related to settings. -->
+    <string name="settingsTfsUrlHint">TFS URL</string>
+
     <!-- Strings related to Home screen. -->
     <string name="homeSearchWorkItemHint">Work Item ID</string>
     <string name="homeSearchWorkItemButtonText">Show</string>
