@@ -24,7 +24,7 @@ abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginPar
 
     @Override
     protected LoginResult doApiAction(LoginParams loginParams) throws ApiAccessException {
-        boolean result = client.tryLogin("DPAORINP", loginParams.getUsername(), loginParams.getPassword());
+        boolean result = client.tryLogin(loginParams.getDomain(), loginParams.getUsername(), loginParams.getPassword());
         return new LoginResult(result);
     }
 
@@ -32,18 +32,27 @@ abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginPar
      * Represents parameters for performing a login.
      */
     static class LoginParams {
+        private final String domain;
         private final String username;
         private final String password;
 
         /**
          * Creates LoginParams.
+         * @param domain Domain to use for logging in.
          * @param username Username to use for logging in.
          * @param password Password to use for logging in.
          */
-        LoginParams(String username, String password) {
+        LoginParams(String domain, String username, String password) {
+            this.domain = domain;
             this.username = username;
             this.password = password;
         }
+
+        /**
+         * Gets the domain to use for logging in.
+         * @return The domain to use for logging in.
+         */
+        String getDomain() { return domain; }
 
         /**
          * Gets the Username to use for logging in.

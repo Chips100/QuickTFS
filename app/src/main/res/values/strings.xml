@@ -4,6 +4,7 @@
 
     <!-- Strings related to login -->
     <string name="loginButtonText">Login</string>
+    <string name="loginDomainHint">Domain</string>
     <string name="loginUserNameHint">User Name</string>
     <string name="loginPasswordHint">Password</string>
     <string name="loginFailedMessage">Login failed.</string>

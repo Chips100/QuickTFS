@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginClient loginClient;
 
     // UI references.
+    private EditText domainEditText;
     private EditText userNameEditText;
     private EditText passwordEditText;
     private Button loginButton;
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         loginClient = IocContainerStub.getDefaultInstance().getInstance(LoginClient.class);
 
         // Set up the login form.
+        domainEditText = (EditText) findViewById(R.id.loginDomain);
         userNameEditText = (EditText) findViewById(R.id.loginUserName);
         passwordEditText = (EditText) findViewById(R.id.loginPassword);
         loginButton = (Button)findViewById(R.id.loginButton);
@@ -40,8 +42,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        String username = userNameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        AsyncLoginTask.LoginParams loginParams = new AsyncLoginTask.LoginParams(
+            domainEditText.getText().toString(),
+            userNameEditText.getText().toString(),
+            passwordEditText.getText().toString()
+        );
 
         setLoadingState(true);
         new AsyncLoginTask(this, loginClient) {
@@ -61,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 context.onLoginSuccess();
             }
-        }.execute(new AsyncLoginTask.LoginParams(username, password));
+        }.execute(loginParams);
     }
 
     private void onLoginSuccess() {
