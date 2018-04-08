@@ -1,6 +1,7 @@
 package quicktfs.apiclients.restapi.WorkItems;
 
 import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.restapi.Authentication.AuthenticatedIdentity;
 import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
@@ -11,11 +12,11 @@ import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
 public class RestApiWorkItemAssignClient extends RestApiWorkItemClientBase implements WorkItemAssignClient {
     /**
      * Creates a RestApiWorkItemAssignClient.
-     * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param configurationSource Configuration source for looking up configuration settings.
      * @param authentication Authentication for the TFS HTTP Rest API.
      */
-    public RestApiWorkItemAssignClient(String restApiUrl, AuthenticationState authentication) {
-        super(restApiUrl, authentication);
+    public RestApiWorkItemAssignClient(ConfigurationSource configurationSource, AuthenticationState authentication) {
+        super(configurationSource, authentication);
     }
 
     /**

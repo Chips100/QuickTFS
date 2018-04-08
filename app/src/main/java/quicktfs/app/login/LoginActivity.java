@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginStore = new LoginStore(this);
-        loginClient = IocContainerStub.getDefaultInstance().getInstance(LoginClient.class);
+        loginClient = IocContainerStub.getInstance(LoginClient.class);
 
         // Set up the login form.
         domainEditText = (EditText) findViewById(R.id.loginDomain);

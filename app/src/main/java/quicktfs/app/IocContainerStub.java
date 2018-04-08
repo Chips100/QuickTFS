@@ -1,8 +1,6 @@
 package quicktfs.app;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
@@ -17,35 +15,24 @@ import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemQueryClient;
  * until real DI is introduced to the project.
  */
 public class IocContainerStub {
-    private static final Map<String, IocContainerStub> instances = new HashMap<>();
+    private static boolean isInitialized = false;
 
     // Singletons.
-    private AuthenticationState authenticationState;
-    private LoginClient loginClient;
-    private WorkItemQueryClient workItemQueryClient;
-    private WorkItemAssignClient workItemAssignClient;
+    private static ConfigurationSource configurationSource;
+    private static AuthenticationState authenticationState;
+    private static LoginClient loginClient;
+    private static WorkItemQueryClient workItemQueryClient;
+    private static WorkItemAssignClient workItemAssignClient;
 
-    private IocContainerStub(String tfsUrl) {
+    private synchronized static void init() {
+        if (isInitialized) return;
+
+        configurationSource = new AppConfigurationSource();
         authenticationState = new RestApiAuthenticationState();
-        loginClient = new RestApiLoginClient(tfsUrl, authenticationState);
-        workItemQueryClient = new RestApiWorkItemQueryClient(tfsUrl, authenticationState);
-        workItemAssignClient = new RestApiWorkItemAssignClient(tfsUrl, authenticationState);
-    }
-
-    private static IocContainerStub getInstance(String tfsUrl) {
-        if (!instances.containsKey(tfsUrl)) {
-            instances.put(tfsUrl, new IocContainerStub(tfsUrl));
-        }
-
-        return instances.get(tfsUrl);
-    }
-
-    /**
-     * Gets a reference to an IocContainerStub for the default TFS.
-     * @return A reference to an IocContainerStub for the default TFS.
-     */
-    public static IocContainerStub getDefaultInstance() {
-        return IocContainerStub.getInstance("https://tfs2.dataport.de/tfs_2/CCSE/");
+        loginClient = new RestApiLoginClient(configurationSource, authenticationState);
+        workItemQueryClient = new RestApiWorkItemQueryClient(configurationSource, authenticationState);
+        workItemAssignClient = new RestApiWorkItemAssignClient(configurationSource, authenticationState);
+        isInitialized = true;
     }
 
     /**
@@ -54,7 +41,9 @@ public class IocContainerStub {
      * @param <T> Type of the instance to get.
      * @return An instance of the specified type.
      */
-    public<T> T getInstance(Class<T> clazz) {
+    public static<T> T getInstance(Class<T> clazz) {
+        if (!isInitialized) init();
+
         if (clazz == AuthenticationState.class) {
             return (T)authenticationState;
         }

@@ -10,8 +10,11 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.net.HttpURLConnection;
+import java.util.HashSet;
+import java.util.Set;
 
 import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.EntityNotFoundException;
 import quicktfs.apiclients.contracts.NotAuthenticatedException;
 import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
@@ -23,19 +26,19 @@ import quicktfs.utilities.StringUtilities;
  */
 public abstract class RestApiClientBase {
     private final Gson gson = new GsonBuilder().create();
-    private final String restApiUrl;
+    private final ConfigurationSource configurationSource;
     private final AuthenticationState authentication;
 
     /**
      * Creates a RestApiLoginClient.
-     * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param configurationSource Configuration source for looking up configuration settings.
      * @param authentication Authentication for the TFS HTTP Rest API.
      */
-    protected RestApiClientBase(String restApiUrl, AuthenticationState authentication) {
-        if (StringUtilities.isNullOrEmpty(restApiUrl)) throw new IllegalArgumentException("restApiUrl");
+    protected RestApiClientBase(ConfigurationSource configurationSource, AuthenticationState authentication) {
+        if (configurationSource == null) throw new IllegalArgumentException("configurationSource");
         if (authentication == null) throw new IllegalArgumentException("authentication");
 
-        this.restApiUrl = restApiUrl;
+        this.configurationSource = configurationSource;
         this.authentication = authentication;
     }
 
@@ -65,7 +68,7 @@ public abstract class RestApiClientBase {
      */
     protected <T> T callApiGet(String apiUrl, Class<T> responseClass) throws ApiAccessException {
         return executeRequest(new Request.Builder()
-                .url(restApiUrl + apiUrl)
+                .url(buildAbsoluteApiUrl(apiUrl))
                 .get()
                 .build(), responseClass);
     }
@@ -83,7 +86,7 @@ public abstract class RestApiClientBase {
     protected <TBody, TResponse> TResponse callApiPatch(String apiUrl, TBody body, Class<TResponse> responseClass)
             throws ApiAccessException {
         return executeRequest(new Request.Builder()
-            .url(restApiUrl + apiUrl)
+            .url(buildAbsoluteApiUrl(apiUrl))
             .patch(RequestBody.create(MediaType.parse("application/json-patch+json"), gson.toJson(body)))
             .build(), responseClass);
     }
@@ -121,7 +124,23 @@ public abstract class RestApiClientBase {
             throws CustomSSLCertificates.CustomSSLCertificatesException {
         OkHttpClient client = new OkHttpClient();
         authentication.configureClientAuthentication(client);
-        client.setSslSocketFactory(CustomSSLCertificates.createSSLSocketFactoryWithTrustedCertificates(CustomSSLCertificates.DataportCertificate));
+
+        Set<String> certificateStrings = configurationSource.getStringSet("TRUSTED_CERTIFICATES");
+        if (certificateStrings == null) certificateStrings = new HashSet<>();
+
+        client.setSslSocketFactory(
+            CustomSSLCertificates.createSSLSocketFactoryWithTrustedCertificates(
+                certificateStrings.toArray(new String[certificateStrings.size()])));
+
         return client;
+    }
+
+    private String buildAbsoluteApiUrl(String relativeApiUrl) throws ApiAccessException {
+        String tfsUrl = configurationSource.getString("TFS_URL");
+        if (StringUtilities.isNullOrEmpty(tfsUrl)) {
+            throw new ApiAccessException("TFS Url not configured.", null);
+        }
+
+        return tfsUrl + relativeApiUrl;
     }
 }

@@ -1,6 +1,7 @@
 package quicktfs.apiclients.restapi;
 
 import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.apiclients.restapi.Authentication.AuthenticatedIdentity;
 import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
@@ -13,11 +14,11 @@ import quicktfs.utilities.ExceptionUtilities;
 public class RestApiLoginClient extends RestApiClientBase implements LoginClient {
     /**
      * Creates a RestApiLoginClient.
-     * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param configurationSource Configuration source for looking up configuration settings.
      * @param authentication Authentication for the TFS HTTP Rest API.
      */
-    public RestApiLoginClient(String restApiUrl, AuthenticationState authentication) {
-        super(restApiUrl, authentication);
+    public RestApiLoginClient(ConfigurationSource configurationSource, AuthenticationState authentication) {
+        super(configurationSource, authentication);
     }
 
     /**

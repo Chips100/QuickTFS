@@ -38,8 +38,8 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_work_item_details);
 
         // stub solution for IOC.
-        workItemQueryClient = IocContainerStub.getDefaultInstance().getInstance(WorkItemQueryClient.class);
-        workItemAssignClient = IocContainerStub.getDefaultInstance().getInstance(WorkItemAssignClient.class);
+        workItemQueryClient = IocContainerStub.getInstance(WorkItemQueryClient.class);
+        workItemAssignClient = IocContainerStub.getInstance(WorkItemAssignClient.class);
 
         // Get UI references.
         titleTextView = (TextView)findViewById(R.id.workItemDetailsTitle);
