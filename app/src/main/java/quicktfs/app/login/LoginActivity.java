@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         setEditTextLoadingState(userNameEditText, isLoading);
         setEditTextLoadingState(passwordEditText, isLoading);
+        setEditTextLoadingState(domainEditText, isLoading);
     }
 
     private void setEditTextLoadingState(EditText editText, boolean isLoading) {
