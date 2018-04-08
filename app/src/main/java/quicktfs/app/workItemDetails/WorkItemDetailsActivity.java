@@ -57,11 +57,13 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
 
         new AsyncLoadWorkItemTask(this, workItemQueryClient) {
             @Override
-            protected void handleSuccess(LoadWorkItemResult result) {
-                WorkItemDetailsActivity context = WorkItemDetailsActivity.this;
+            protected void handleComplete() {
+                WorkItemDetailsActivity.this.setLoadingState(false);
+            }
 
-                context.displayWorkItem(result.getWorkItem());
-                context.setLoadingState(false);
+            @Override
+            protected void handleSuccess(LoadWorkItemResult result) {
+                WorkItemDetailsActivity.this.displayWorkItem(result.getWorkItem());
             }
         }.execute(new AsyncLoadWorkItemTask.LoadWorkItemParams(workItemId));
     }
@@ -90,11 +92,15 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
      */
     public void assignToMe(View view) {
         setLoadingState(true);
-        new AsyncAssignWorkItemToMeTask(workItemAssignClient) {
+        new AsyncAssignWorkItemToMeTask(this, workItemAssignClient) {
             @Override
-            protected void onPostExecute(AssignWorkItemToMeResult result) {
+            protected void handleComplete() {
+                WorkItemDetailsActivity.this.setLoadingState(false);
+            }
+
+            @Override
+            protected void handleSuccess(AssignWorkItemToMeResult assignWorkItemToMeResult) {
                 WorkItemDetailsActivity context = WorkItemDetailsActivity.this;
-                context.setLoadingState(false);
                 Toast.makeText(context, context.getString(R.string.workItemDetailsAssignMeSuccessMessage), Toast.LENGTH_LONG).show();
             }
         }.execute(new AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams(workItemId));

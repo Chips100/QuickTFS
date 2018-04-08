@@ -8,5 +8,5 @@ public interface WorkItemAssignClient {
      * Assigns the specified Work Item to the current user.
      * @param workItemId ID of the Work Item.
      */
-    void assignToMe(int workItemId);
+    void assignToMe(int workItemId) throws ApiAccessException;
 }

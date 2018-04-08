@@ -46,9 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         setLoadingState(true);
         new AsyncLoginTask(this, loginClient) {
             @Override
+            protected void handleComplete() {
+                LoginActivity.this.setLoadingState(false);
+            }
+
+            @Override
             protected void handleSuccess(LoginResult result) {
                 LoginActivity context = LoginActivity.this;
-                context.setLoadingState(false);
 
                 if (!result.wasSuccessful()) {
                     Toast.makeText(context, context.getString(R.string.loginFailedMessage), Toast.LENGTH_LONG).show();

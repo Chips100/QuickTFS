@@ -1,0 +1,36 @@
+package quicktfs.apiclients.restapi.WorkItems;
+
+import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.WorkItemDetailsDto;
+import quicktfs.apiclients.contracts.WorkItemQueryClient;
+import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
+
+/**
+ * Client that allows querying Work Items using the HTTP Rest API.
+ */
+public class RestApiWorkItemQueryClient extends RestApiWorkItemClientBase implements WorkItemQueryClient {
+    /**
+     * Creates a RestApiLoginClient.
+     * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param authentication Authentication for the TFS HTTP Rest API.
+     */
+    public RestApiWorkItemQueryClient(String restApiUrl, AuthenticationState authentication) {
+        super(restApiUrl, authentication);
+    }
+
+    /**
+     * Queries a single Work Item by its ID.
+     * @param id ID of the Work Item.
+     * @return The Work Item with the specified ID; or null if it does not exist.
+     */
+    @Override
+    public WorkItemDetailsDto queryById(int id) throws ApiAccessException {
+        // Use base functionality for loading the Work Item
+        // and simply map the properties to the contracts DTO.
+        RestApiWorkItem workItem = getWorkItemById(id);
+
+        return new WorkItemDetailsDto(id,
+            workItem.fields.title,
+            workItem.fields.description);
+    }
+}

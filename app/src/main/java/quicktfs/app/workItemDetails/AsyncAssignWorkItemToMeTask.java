@@ -1,40 +1,32 @@
 package quicktfs.app.workItemDetails;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import quicktfs.apiclients.contracts.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
+import quicktfs.app.AsyncApiClientTask;
 
 /**
  * A task for assigning a Work Item to the current user asynchronously.
  */
-abstract class AsyncAssignWorkItemToMeTask extends AsyncTask<AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams, Void, AsyncAssignWorkItemToMeTask.AssignWorkItemToMeResult> {
+abstract class AsyncAssignWorkItemToMeTask extends AsyncApiClientTask<AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams, AsyncAssignWorkItemToMeTask.AssignWorkItemToMeResult> {
     private final WorkItemAssignClient client;
 
     /**
      * Creates an AsyncAssignWorkItemToMeTask.
+     * @param context Context from which the task is started.
      * @param client Client to use for assigning the Work Item.
      */
-    AsyncAssignWorkItemToMeTask(WorkItemAssignClient client) {
+    AsyncAssignWorkItemToMeTask(Context context, WorkItemAssignClient client) {
+        super(context);
         this.client = client;
     }
 
     @Override
-    protected AssignWorkItemToMeResult doInBackground(AssignWorkItemToMeParams... assignWorkItemToMeParams) {
-        if (assignWorkItemToMeParams == null || assignWorkItemToMeParams.length != 1) {
-            throw new IllegalArgumentException("assignWorkItemToMeParams");
-        }
-
-        AssignWorkItemToMeParams params = assignWorkItemToMeParams[0];
-        client.assignToMe(params.getWorkItemId());
+    protected AssignWorkItemToMeResult doApiAction(AssignWorkItemToMeParams assignWorkItemToMeParams) throws ApiAccessException {
+        client.assignToMe(assignWorkItemToMeParams.getWorkItemId());
         return new AssignWorkItemToMeResult();
     }
-
-    /**
-     * Should be overridden to define the handling of the completed operation.
-     * @param result Result of the assign operation.
-     */
-    @Override
-    protected abstract void onPostExecute(AssignWorkItemToMeResult result);
 
     /**
      * Represents parameters for assigning a Work Item to the current user.

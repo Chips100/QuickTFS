@@ -15,6 +15,7 @@ abstract class AsyncLoadWorkItemTask extends AsyncApiClientTask<AsyncLoadWorkIte
 
     /**
      * Creates an AsyncLoadWorkItemTask.
+     * @param context Context from which the task is started.
      * @param client Client to use for loading the Work Item.
      */
     AsyncLoadWorkItemTask(Context context, WorkItemQueryClient client) {

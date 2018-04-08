@@ -40,6 +40,8 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
 
     @Override
     protected final void onPostExecute(ApiActionResult<TResult> result) {
+        handleComplete();
+
         if (result.wasSuccessful()) {
             handleSuccess(result.getApiResult());
         }
@@ -69,6 +71,12 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
      * @param result Result of the operation.
      */
     protected abstract void handleSuccess(TResult result);
+
+    /**
+     * Should be overridden to define the handling of completion of the operation.
+     * Will be executed in success and failure cases.
+     */
+    protected void handleComplete() { }
 
     /**
      * Models the result of an action with Api access.

@@ -14,6 +14,7 @@ abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginPar
 
     /**
      * Creates an AsyncLoginTask.
+     * @param context Context from which the task is started.
      * @param client Client to use for logging in.
      */
     AsyncLoginTask(Context context, LoginClient client) {

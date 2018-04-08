@@ -1,38 +1,23 @@
 package quicktfs.apiclients.restapi;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import quicktfs.apiclients.contracts.ApiAccessException;
 import quicktfs.apiclients.contracts.LoginClient;
+import quicktfs.apiclients.restapi.Authentication.AuthenticatedIdentity;
+import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
 import quicktfs.apiclients.restapi.NTLM.NTLMAuthenticationException;
-import quicktfs.apiclients.restapi.NTLM.NTLMAuthenticator;
 import quicktfs.utilities.ExceptionUtilities;
 
 /**
  * Client that allows logging in to a TFS Api using the HTTP Rest API.
  */
-public class RestApiLoginClient extends RestApiClientBase implements LoginClient, RestApiLogin {
-    private String domain = "DPAORINP";
-    private String username;
-    private String password;
-
+public class RestApiLoginClient extends RestApiClientBase implements LoginClient {
     /**
      * Creates a RestApiLoginClient.
      * @param restApiUrl The URL of the TFS HTTP Rest API.
+     * @param authentication Authentication for the TFS HTTP Rest API.
      */
-    public RestApiLoginClient(String restApiUrl) {
-        super(restApiUrl);
-    }
-
-    /**
-     * Should be overridden to return a component
-     * that provides login data to the API calls.
-     * @return An instance of RestApiLogin to provide login data to the API calls.
-     */
-    @Override
-    protected RestApiLogin getLogin() {
-        // Return itself to test access with the current login data.
-        return this;
+    public RestApiLoginClient(String restApiUrl, AuthenticationState authentication) {
+        super(restApiUrl, authentication);
     }
 
     /**
@@ -43,15 +28,21 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
      */
     @Override
     public boolean tryLogin(String username, String password) throws ApiAccessException {
-        this.username = username;
-        this.password = password;
-
         try {
             // Try an API call with the specified credentials.
-            callApiGet("projects?stateFilter=All&api-version=1.0", LoginResponse.class);
+            this.getAuthentication().changeCredentials(username, password);
+            LoginResponse response = callApiGet("_api/_common/GetUserProfile?__v=5", LoginResponse.class);
+
+            // If login was successful, remember the logged in identity.
+            this.getAuthentication().setLoggedIn(new AuthenticatedIdentity(
+                    response.identity.Domain,
+                    response.identity.AccountName,
+                    response.identity.DisplayName,
+                    response.identity.MailAddress
+            ));
+
             return true;
-        }
-        catch(ApiAccessException exception) {
+        } catch (ApiAccessException exception) {
             // If the exception is ultimately caused by an NTLMAuthenticationException,
             // there is an error in the credentials - return this as a failed login.
             if (ExceptionUtilities.findCauseOfType(exception, NTLMAuthenticationException.class) != null) {
@@ -63,10 +54,14 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
         }
     }
 
-    @Override
-    public void configureLogin(OkHttpClient client) {
-        client.setAuthenticator(new NTLMAuthenticator(username, password, domain));
+    public static class LoginResponse {
+        public LoginIdentity identity;
     }
 
-    public static class LoginResponse { }
+    public static class LoginIdentity {
+        public String Domain;
+        public String AccountName;
+        public String DisplayName;
+        public String MailAddress;
+    }
 }
