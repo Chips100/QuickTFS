@@ -18,4 +18,5 @@
     <string name="workItemDetailsAssignMe">Assign to me</string>
     <string name="workItemDetailsAssignMeSuccessMessage">Work Item successfully assigned.</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="workItemDetailsNotFoundMessage">The Work Item does not exist.</string>
 </resources>

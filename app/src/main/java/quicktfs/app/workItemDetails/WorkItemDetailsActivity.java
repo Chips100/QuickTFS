@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.EntityNotFoundException;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
@@ -28,6 +30,7 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
     private TextView descriptionTextView;
     private View progressBar;
     private View detailsContainer;
+    private View notFoundContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         descriptionTextView = (TextView)findViewById(R.id.workItemDetailsDescription);
         progressBar = findViewById(R.id.workItemDetailsProgressbar);
         detailsContainer = findViewById(R.id.workItemDetailsContainer);
+        notFoundContainer = findViewById(R.id.workItemDetailsNotFound);
 
         // Read Work Item ID from intent that started the activity.
         workItemId = getIntent().getIntExtra(INTENT_WORKITEM_ID, 0);
@@ -64,6 +68,19 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
             @Override
             protected void handleSuccess(LoadWorkItemResult result) {
                 WorkItemDetailsActivity.this.displayWorkItem(result.getWorkItem());
+            }
+
+            @Override
+            protected void handleApiAccessException(ApiAccessException exception) {
+                // Special handling when Work Item was not found.
+                if (exception instanceof EntityNotFoundException) {
+                    WorkItemDetailsActivity.this.detailsContainer.setVisibility(View.GONE);
+                    WorkItemDetailsActivity.this.notFoundContainer.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                // Otherwise, fall back to default handling.
+                super.handleApiAccessException(exception);
             }
         }.execute(new AsyncLoadWorkItemTask.LoadWorkItemParams(workItemId));
     }

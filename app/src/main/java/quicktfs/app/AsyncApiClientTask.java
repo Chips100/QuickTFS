@@ -54,7 +54,7 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
      * Handles exceptions that occur by accessing the TFS Api (e.g. network problems).
      * @param exception Exception that was thrown.
      */
-    private void handleApiAccessException(ApiAccessException exception) {
+    protected void handleApiAccessException(ApiAccessException exception) {
         Toast.makeText(context, context.getText(R.string.apiError) + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
     }
 

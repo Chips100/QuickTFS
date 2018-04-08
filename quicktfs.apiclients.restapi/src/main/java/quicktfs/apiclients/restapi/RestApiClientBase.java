@@ -9,7 +9,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import java.net.HttpURLConnection;
+
 import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.EntityNotFoundException;
 import quicktfs.apiclients.contracts.NotAuthenticatedException;
 import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
 import quicktfs.apiclients.restapi.SSL.CustomSSLCertificates;
@@ -89,13 +92,28 @@ public abstract class RestApiClientBase {
             OkHttpClient client = createHttpClient();
             Call call = client.newCall(request);
             Response response = call.execute();
-            String responseBody = response.body().string();
 
+            if (!response.isSuccessful()) {
+                handleFailedResponse(response);
+            }
+
+            String responseBody = response.body().string();
             return gson.fromJson(responseBody, responseClass);
+        }
+        catch(ApiAccessException exception) {
+            throw exception;
         }
         catch(Exception exception) {
             throw new ApiAccessException(exception);
         }
+    }
+
+    private void handleFailedResponse(Response response) throws ApiAccessException {
+        if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+            throw new EntityNotFoundException();
+        }
+
+        throw new ApiAccessException("Server response indicates an error.", null);
     }
 
     private OkHttpClient createHttpClient()
