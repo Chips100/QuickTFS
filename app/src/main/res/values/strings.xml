@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">QuickTFS</string>
     <string name="apiError">Error contacting TFS server.</string>
+    <string name="menuSettingsTitle">Settings</string>
 
     <!-- Strings related to login -->
     <string name="loginButtonText">Login</string>
