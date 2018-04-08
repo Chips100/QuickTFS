@@ -22,15 +22,16 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
 
     /**
      * Tries logging in with the specified credentials.
+     * @param domain Domain of the account to use for logging in.
      * @param username UserName of the account to use for logging in.
      * @param password Password of the account to use for logging in.
      * @return True, if the login was successful; otherwise false.
      */
     @Override
-    public boolean tryLogin(String username, String password) throws ApiAccessException {
+    public boolean tryLogin(String domain, String username, String password) throws ApiAccessException {
         try {
             // Try an API call with the specified credentials.
-            this.getAuthentication().changeCredentials(username, password);
+            this.getAuthentication().changeCredentials(domain, username, password);
             LoginResponse response = callApiGet("_api/_common/GetUserProfile?__v=5", LoginResponse.class);
 
             // If login was successful, remember the logged in identity.

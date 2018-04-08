@@ -6,9 +6,10 @@ package quicktfs.apiclients.contracts;
 public interface LoginClient {
     /**
      * Tries logging in with the specified credentials.
+     * @param domain Domain of the account to use for logging in.
      * @param username UserName of the account to use for logging in.
      * @param password Password of the account to use for logging in.
      * @return True, if the login was successful; otherwise false.
      */
-    boolean tryLogin(String username, String password) throws ApiAccessException;
+    boolean tryLogin(String domain, String username, String password) throws ApiAccessException;
 }

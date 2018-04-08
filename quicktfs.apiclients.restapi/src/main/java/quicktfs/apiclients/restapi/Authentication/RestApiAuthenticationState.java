@@ -8,7 +8,7 @@ import quicktfs.apiclients.restapi.NTLM.NTLMAuthenticator;
  * Provides login data for the TFS HTTP Rest API with NTLM authentication.
  */
 public class RestApiAuthenticationState implements AuthenticationState {
-    private String domain = "DPAORINP";
+    private String domain;
     private String username;
     private String password;
     private AuthenticatedIdentity identity;
@@ -16,11 +16,13 @@ public class RestApiAuthenticationState implements AuthenticationState {
     /**
      * Changes the credentials that should be used for authentication.
      * This resets the current identity until setLoggedIn is called.
+     * @param domain Domain to use for authentication.
      * @param username Username to use for authentication.
      * @param password Password to use for authentication.
      */
     @Override
-    public void changeCredentials(String username, String password) {
+    public void changeCredentials(String domain, String username, String password) {
+        this.domain = domain;
         this.username = username;
         this.password = password;
         this.identity = null;

@@ -24,7 +24,7 @@ abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginPar
 
     @Override
     protected LoginResult doApiAction(LoginParams loginParams) throws ApiAccessException {
-        boolean result = client.tryLogin(loginParams.getUsername(), loginParams.getPassword());
+        boolean result = client.tryLogin("DPAORINP", loginParams.getUsername(), loginParams.getPassword());
         return new LoginResult(result);
     }
 

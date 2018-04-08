@@ -15,10 +15,11 @@ public interface AuthenticationState {
     /**
      * Changes the credentials that should be used for authentication.
      * This resets the current identity until setLoggedIn is called.
+     * @param domain Domain to use for authentication.
      * @param username Username to use for authentication.
      * @param password Password to use for authentication.
      */
-    void changeCredentials(String username, String password);
+    void changeCredentials(String domain, String username, String password);
 
     /**
      * Specifies that the credentials have been used for a successful login.
