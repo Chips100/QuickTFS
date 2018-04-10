@@ -1,5 +1,8 @@
 package quicktfs.utilities;
 
+import android.os.Build;
+import android.text.Html;
+import android.text.Spanned;
 import android.widget.EditText;
 
 /**
@@ -16,6 +19,20 @@ public class UiUtilities {
                 editText.requestFocus();
                 return;
             }
+        }
+    }
+
+    /**
+     * Interpretiert einen String mit HTML Inhalt.
+     * @param html String mit dem HTML Inhalt.
+     * @return Den interpretierten Inhalt des HTML Strings.
+     */
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String html){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(html);
         }
     }
 }

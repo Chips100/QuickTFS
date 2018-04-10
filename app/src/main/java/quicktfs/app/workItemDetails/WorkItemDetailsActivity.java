@@ -13,6 +13,7 @@ import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
 import quicktfs.app.IocContainerStub;
 import quicktfs.app.R;
+import quicktfs.utilities.UiUtilities;
 
 /**
  * Displays details of a single Work Item and
@@ -111,7 +112,7 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         stateTextView.setText(workItem.getState());
         titleTextView.setText(title);
         assignedToTextView.setText(workItem.getAssignedTo());
-        descriptionTextView.setText(workItem.getDescription());
+        descriptionTextView.setText(UiUtilities.fromHtml(workItem.getDescription()));
     }
 
     /**
