@@ -29,7 +29,6 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
     private TextView teamProjectTextView;
     private TextView iterationPathTextView;
     private TextView activityTextView;
-    private TextView typeAndIdTextView;
     private TextView stateTextView;
     private TextView titleTextView;
     private TextView assignedToTextView;
@@ -51,7 +50,6 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         teamProjectTextView = (TextView)findViewById(R.id.workItemDetailsTeamProject);
         iterationPathTextView = (TextView)findViewById(R.id.workItemDetailsIterationPath);
         activityTextView = (TextView)findViewById(R.id.workItemDetailsActivity);
-        typeAndIdTextView = (TextView)findViewById(R.id.workItemDetailsTypeAndId);
         stateTextView = (TextView)findViewById(R.id.workItemDetailsState);
         titleTextView = (TextView)findViewById(R.id.workItemDetailsTitle);
         assignedToTextView = (TextView)findViewById(R.id.workItemDetailsAssignedTo);
@@ -104,12 +102,14 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
      * @param workItem Details of the Work Item do display.
      */
     private void displayWorkItem(WorkItemDetailsDto workItem) {
+        String title = workItem.getType() + " " + String.valueOf(workItem.getId())
+                + ": " + workItem.getTitle();
+
         teamProjectTextView.setText(workItem.getTeamProject());
         iterationPathTextView.setText(workItem.getIterationPath());
         activityTextView.setText(workItem.getActivity());
-        typeAndIdTextView.setText(workItem.getType() + " " + String.valueOf(workItem.getId()));
         stateTextView.setText(workItem.getState());
-        titleTextView.setText(workItem.getTitle());
+        titleTextView.setText(title);
         assignedToTextView.setText(workItem.getAssignedTo());
         descriptionTextView.setText(workItem.getDescription());
     }
