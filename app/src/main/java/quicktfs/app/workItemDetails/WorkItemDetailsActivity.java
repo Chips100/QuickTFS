@@ -26,7 +26,13 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
     private WorkItemAssignClient workItemAssignClient;
 
     // UI references.
+    private TextView teamProjectTextView;
+    private TextView iterationPathTextView;
+    private TextView activityTextView;
+    private TextView typeAndIdTextView;
+    private TextView stateTextView;
     private TextView titleTextView;
+    private TextView assignedToTextView;
     private TextView descriptionTextView;
     private View progressBar;
     private View detailsContainer;
@@ -42,11 +48,19 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         workItemAssignClient = IocContainerStub.getInstance(WorkItemAssignClient.class);
 
         // Get UI references.
+        teamProjectTextView = (TextView)findViewById(R.id.workItemDetailsTeamProject);
+        iterationPathTextView = (TextView)findViewById(R.id.workItemDetailsIterationPath);
+        activityTextView = (TextView)findViewById(R.id.workItemDetailsActivity);
+        typeAndIdTextView = (TextView)findViewById(R.id.workItemDetailsTypeAndId);
+        stateTextView = (TextView)findViewById(R.id.workItemDetailsState);
         titleTextView = (TextView)findViewById(R.id.workItemDetailsTitle);
+        assignedToTextView = (TextView)findViewById(R.id.workItemDetailsAssignedTo);
         descriptionTextView = (TextView)findViewById(R.id.workItemDetailsDescription);
+
         progressBar = findViewById(R.id.workItemDetailsProgressbar);
         detailsContainer = findViewById(R.id.workItemDetailsContainer);
         notFoundContainer = findViewById(R.id.workItemDetailsNotFound);
+
 
         // Read Work Item ID from intent that started the activity.
         workItemId = getIntent().getIntExtra(INTENT_WORKITEM_ID, 0);
@@ -90,7 +104,13 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
      * @param workItem Details of the Work Item do display.
      */
     private void displayWorkItem(WorkItemDetailsDto workItem) {
+        teamProjectTextView.setText(workItem.getTeamProject());
+        iterationPathTextView.setText(workItem.getIterationPath());
+        activityTextView.setText(workItem.getActivity());
+        typeAndIdTextView.setText(workItem.getType() + " " + String.valueOf(workItem.getId()));
+        stateTextView.setText(workItem.getState());
         titleTextView.setText(workItem.getTitle());
+        assignedToTextView.setText(workItem.getAssignedTo());
         descriptionTextView.setText(workItem.getDescription());
     }
 

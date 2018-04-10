@@ -31,7 +31,13 @@ public class RestApiWorkItemQueryClient extends RestApiWorkItemClientBase implem
         RestApiWorkItem workItem = getWorkItemById(id);
 
         return new WorkItemDetailsDto(id,
+            workItem.fields.teamProject,
+            workItem.fields.type,
             workItem.fields.title,
-            workItem.fields.description);
+            workItem.fields.description,
+            workItem.fields.assignedTo,
+            workItem.fields.activity,
+            workItem.fields.iterationPath,
+            workItem.fields.state);
     }
 }
