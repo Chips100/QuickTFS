@@ -27,6 +27,7 @@ public interface RestClient {
      * @return The result returned from the Api.
      * @throws ApiAccessException Thrown if any errors occur while accessing the Api.
      */
+    @SuppressWarnings("UnusedReturnValue") // Will be used later.
     <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> responseClass)
             throws ApiAccessException;
 

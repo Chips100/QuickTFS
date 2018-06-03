@@ -41,6 +41,7 @@ public class IocContainerStub {
      * @param <T> Type of the instance to get.
      * @return An instance of the specified type.
      */
+    @SuppressWarnings("unchecked") // Casts are checked for safety.
     public static<T> T getInstance(Class<T> clazz) {
         if (!isInitialized) init();
 

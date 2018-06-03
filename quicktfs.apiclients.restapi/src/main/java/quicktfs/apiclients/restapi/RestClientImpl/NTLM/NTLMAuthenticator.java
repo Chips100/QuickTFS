@@ -64,7 +64,7 @@ public class NTLMAuthenticator implements Authenticator {
     }
 
     @Override
-    public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
+    public Request authenticateProxy(Proxy proxy, Response response) {
         return null;
     }
 }

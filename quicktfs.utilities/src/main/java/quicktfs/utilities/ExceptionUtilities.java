@@ -11,6 +11,7 @@ public class ExceptionUtilities {
      * @param <T> Type of the underlying cause to search.
      * @return The underlying cause of the specified type; or null if it was not found.
      */
+    @SuppressWarnings("unchecked") // Casts are checked for safety.
     public static<T> T findCauseOfType(Throwable exception, Class<T> innerExceptionClass) {
         // Recursion exit condition: End of inner exceptions reached.
         if (exception == null) return null;
