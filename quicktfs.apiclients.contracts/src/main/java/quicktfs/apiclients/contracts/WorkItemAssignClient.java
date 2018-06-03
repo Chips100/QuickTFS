@@ -1,5 +1,7 @@
 package quicktfs.apiclients.contracts;
 
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
+
 /**
  * Client that allows assigning a Work Item to a user.
  */

@@ -2,7 +2,7 @@ package quicktfs.app.workItemDetails;
 
 import android.content.Context;
 
-import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.app.AsyncApiClientTask;
 

@@ -6,13 +6,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import quicktfs.apiclients.contracts.ApiAccessException;
-import quicktfs.apiclients.contracts.EntityNotFoundException;
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
+import quicktfs.apiclients.contracts.exceptions.EntityNotFoundException;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
 import quicktfs.app.IocContainerStub;
 import quicktfs.app.R;
+import quicktfs.utilities.ExceptionUtilities;
 import quicktfs.utilities.UiUtilities;
 
 /**
@@ -86,7 +87,7 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
             @Override
             protected void handleApiAccessException(ApiAccessException exception) {
                 // Special handling when Work Item was not found.
-                if (exception instanceof EntityNotFoundException) {
+                if (ExceptionUtilities.findCauseOfType(exception, EntityNotFoundException.class) != null) {
                     WorkItemDetailsActivity.this.detailsContainer.setVisibility(View.GONE);
                     WorkItemDetailsActivity.this.notFoundContainer.setVisibility(View.VISIBLE);
                     return;

@@ -1,4 +1,4 @@
-package quicktfs.apiclients.restapi.SSL;
+package quicktfs.apiclients.restapi.RestClientImpl.SSL;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -1,24 +1,23 @@
 package quicktfs.apiclients.restapi;
 
-import quicktfs.apiclients.contracts.ApiAccessException;
-import quicktfs.apiclients.contracts.ConfigurationSource;
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.LoginClient;
-import quicktfs.apiclients.restapi.Authentication.AuthenticatedIdentity;
-import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
-import quicktfs.apiclients.restapi.NTLM.NTLMAuthenticationException;
+import quicktfs.apiclients.restapi.authentication.AuthenticatedIdentity;
+import quicktfs.apiclients.restapi.authentication.AuthenticationFailedException;
 import quicktfs.utilities.ExceptionUtilities;
 
 /**
  * Client that allows logging in to a TFS Api using the HTTP Rest API.
  */
-public class RestApiLoginClient extends RestApiClientBase implements LoginClient {
+public class RestApiLoginClient implements LoginClient {
+    private final RestClient client;
+
     /**
      * Creates a RestApiLoginClient.
-     * @param configurationSource Configuration source for looking up configuration settings.
-     * @param authentication Authentication for the TFS HTTP Rest API.
+     * @param client Client used for communication with the REST interface.
      */
-    public RestApiLoginClient(ConfigurationSource configurationSource, AuthenticationState authentication) {
-        super(configurationSource, authentication);
+    public RestApiLoginClient(RestClient client) {
+        this.client = client;
     }
 
     /**
@@ -32,11 +31,11 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
     public boolean tryLogin(String domain, String username, String password) throws ApiAccessException {
         try {
             // Try an API call with the specified credentials.
-            this.getAuthentication().changeCredentials(domain, username, password);
-            LoginResponse response = callApiGet("_api/_common/GetUserProfile?__v=5", LoginResponse.class);
+            client.setCredentials(domain, username, password);
+            LoginResponse response = client.get("_api/_common/GetUserProfile?__v=5", LoginResponse.class);
 
             // If login was successful, remember the logged in identity.
-            this.getAuthentication().setLoggedIn(new AuthenticatedIdentity(
+            client.setCurrentIdentity(new AuthenticatedIdentity(
                     response.identity.Domain,
                     response.identity.AccountName,
                     response.identity.DisplayName,
@@ -47,7 +46,7 @@ public class RestApiLoginClient extends RestApiClientBase implements LoginClient
         } catch (ApiAccessException exception) {
             // If the exception is ultimately caused by an NTLMAuthenticationException,
             // there is an error in the credentials - return this as a failed login.
-            if (ExceptionUtilities.findCauseOfType(exception, NTLMAuthenticationException.class) != null) {
+            if (ExceptionUtilities.findCauseOfType(exception, AuthenticationFailedException.class) != null) {
                 return false;
             }
 

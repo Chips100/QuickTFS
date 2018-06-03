@@ -1,4 +1,4 @@
-package quicktfs.apiclients.restapi.NTLM;
+package quicktfs.apiclients.restapi.RestClientImpl.NTLM;
 
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Request;
@@ -7,6 +7,8 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.net.Proxy;
 import java.util.List;
+
+import quicktfs.apiclients.restapi.authentication.AuthenticationFailedException;
 
 /**
  * Authenticator for Windows Integrated Authentication via NTLM.
@@ -40,8 +42,12 @@ public class NTLMAuthenticator implements Authenticator {
 
     @Override
     public Request authenticate(Proxy proxy, Response response) throws IOException {
+        // Reset Retry-Counter for new requests.
+        if (response.priorResponse() == null) { retryCount = 0; }
+
+        // Check if maximum number of retries has been exceeded.
         if (retryCount++ > maxRetryCount) {
-            throw new IOException("Error in NTLM authentication.", new NTLMAuthenticationException());
+            throw new IOException("Error in NTLM authentication.", new AuthenticationFailedException());
         }
 
         final List<String> WWWAuthenticate = response.headers().values("WWW-Authenticate");

@@ -2,7 +2,7 @@ package quicktfs.app.login;
 
 import android.content.Context;
 
-import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.app.AsyncApiClientTask;
 

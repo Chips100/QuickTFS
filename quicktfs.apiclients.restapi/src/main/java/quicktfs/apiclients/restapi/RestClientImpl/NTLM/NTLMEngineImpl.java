@@ -26,7 +26,7 @@
  * <http://www.apache.org/>.
  *
  */
-package quicktfs.apiclients.restapi.NTLM;
+package quicktfs.apiclients.restapi.RestClientImpl.NTLM;
 
 import android.util.Base64;
 import java.io.UnsupportedEncodingException;

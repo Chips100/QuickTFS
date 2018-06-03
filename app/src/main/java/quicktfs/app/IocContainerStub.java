@@ -4,11 +4,10 @@ import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
-import quicktfs.apiclients.restapi.Authentication.AuthenticationState;
-import quicktfs.apiclients.restapi.Authentication.RestApiAuthenticationState;
+import quicktfs.apiclients.restapi.RestClient;
 import quicktfs.apiclients.restapi.RestApiLoginClient;
-import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemAssignClient;
-import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemQueryClient;
+import quicktfs.apiclients.restapi.RestClientImpl.RestClientImpl;
+import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemClient;
 
 /**
  * Stub for an IOC container as a temporary solution
@@ -19,7 +18,6 @@ public class IocContainerStub {
 
     // Singletons.
     private static ConfigurationSource configurationSource;
-    private static AuthenticationState authenticationState;
     private static LoginClient loginClient;
     private static WorkItemQueryClient workItemQueryClient;
     private static WorkItemAssignClient workItemAssignClient;
@@ -28,10 +26,12 @@ public class IocContainerStub {
         if (isInitialized) return;
 
         configurationSource = AppConfigurationSource.getInstance();
-        authenticationState = new RestApiAuthenticationState();
-        loginClient = new RestApiLoginClient(configurationSource, authenticationState);
-        workItemQueryClient = new RestApiWorkItemQueryClient(configurationSource, authenticationState);
-        workItemAssignClient = new RestApiWorkItemAssignClient(configurationSource, authenticationState);
+        RestClient restClient = new RestClientImpl(configurationSource);
+        RestApiWorkItemClient workItemClient = new RestApiWorkItemClient(restClient);
+
+        loginClient = new RestApiLoginClient(restClient);
+        workItemQueryClient = workItemClient;
+        workItemAssignClient = workItemClient;
         isInitialized = true;
     }
 
@@ -44,9 +44,6 @@ public class IocContainerStub {
     public static<T> T getInstance(Class<T> clazz) {
         if (!isInitialized) init();
 
-        if (clazz == AuthenticationState.class) {
-            return (T)authenticationState;
-        }
         if (clazz == LoginClient.class) {
             return (T)loginClient;
         }

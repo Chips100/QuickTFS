@@ -1,9 +1,9 @@
-package quicktfs.apiclients.restapi.Authentication;
+package quicktfs.apiclients.restapi.authentication;
 
 /**
  * Represents an identity that has successfully authenticated.
  */
-public class AuthenticatedIdentity {
+public final class AuthenticatedIdentity {
     private final String domain;
     private final String accountName;
     private final String displayName;

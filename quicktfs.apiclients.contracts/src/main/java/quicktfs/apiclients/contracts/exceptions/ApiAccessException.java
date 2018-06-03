@@ -1,4 +1,4 @@
-package quicktfs.apiclients.contracts;
+package quicktfs.apiclients.contracts.exceptions;
 
 /**
  * Thrown when errors occur during access of the server.

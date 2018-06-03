@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import quicktfs.apiclients.contracts.ApiAccessException;
+import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 
 /**
  * Base implementation for asynchronous task that use ApiClients for the TFS Api.

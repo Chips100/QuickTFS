@@ -29,6 +29,8 @@ public class UiUtilities {
      */
     @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html){
+        if (StringUtilities.isNullOrEmpty(html)) return Html.fromHtml("");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
         } else {
