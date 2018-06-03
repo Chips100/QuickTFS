@@ -23,9 +23,9 @@ public class UiUtilities {
     }
 
     /**
-     * Interpretiert einen String mit HTML Inhalt.
-     * @param html String mit dem HTML Inhalt.
-     * @return Den interpretierten Inhalt des HTML Strings.
+     * Parses HTML content from the specified String.
+     * @param html String with HTML content.
+     * @return Parsed HTML content from the String.
      */
     @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html){
