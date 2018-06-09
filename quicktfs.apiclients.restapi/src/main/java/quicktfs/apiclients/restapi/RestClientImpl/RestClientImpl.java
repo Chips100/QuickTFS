@@ -22,6 +22,14 @@ import quicktfs.apiclients.restapi.RestClientImpl.SSL.CustomSSLCertificates;
 import quicktfs.apiclients.restapi.authentication.AuthenticatedIdentity;
 import quicktfs.utilities.StringUtilities;
 
+/**
+ * Implementation to fulfill the interface defined for communication
+ * with the REST interface.
+ *
+ * Basically, this class just puts together some third-party service
+ * and deals with some low-level details (NTLM authentication, JSON serialization,
+ * HTTP communication) that are difficult to test and will be mocked in tests.
+ */
 public final class RestClientImpl implements RestClient {
     private final Gson gson = new GsonBuilder().create();
     private final ConfigurationSource configurationSource;

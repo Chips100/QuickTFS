@@ -44,7 +44,7 @@ public class RestApiLoginClient implements LoginClient {
 
             return true;
         } catch (ApiAccessException exception) {
-            // If the exception is ultimately caused by an NTLMAuthenticationException,
+            // If the exception is ultimately caused by an AuthenticationFailedException,
             // there is an error in the credentials - return this as a failed login.
             if (ExceptionUtilities.findCauseOfType(exception, AuthenticationFailedException.class) != null) {
                 return false;

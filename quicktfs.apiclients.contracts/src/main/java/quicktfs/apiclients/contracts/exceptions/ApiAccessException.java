@@ -15,6 +15,14 @@ public class ApiAccessException extends Exception {
     /**
      * Creates an ApiAccessException with a custom message.
      * @param message Message of the exception.
+     */
+    public ApiAccessException(String message) {
+        super(message, null);
+    }
+
+    /**
+     * Creates an ApiAccessException with a custom message.
+     * @param message Message of the exception.
      * @param cause Underlying cause of the exception.
      */
     public ApiAccessException(String message, Exception cause) {
