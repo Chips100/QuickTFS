@@ -1,5 +1,8 @@
 package quicktfs.apiclients.restapi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.restapi.authentication.AuthenticatedIdentity;
 
@@ -8,18 +11,21 @@ import quicktfs.apiclients.restapi.authentication.AuthenticatedIdentity;
  * configuration of its behaviour for unit tests.
  */
 public class RestClientMock implements RestClient {
-    private AuthenticatedIdentity currentIdentity;
     private Credentials credentials;
+    // "Shortcut - logged in by default.
+    private AuthenticatedIdentity currentIdentity = new AuthenticatedIdentity(
+        "Domain", "AccountName", "DisplayName", "test@test.de"
+    );
 
-    private GetBehaviour getBehaviour;
-    private PatchBehaviour patchBehaviour;
+    private final List<GetBehaviour> getBehaviours = new ArrayList<>();
+    private final List<PatchBehaviour> patchBehaviours = new ArrayList<>();
 
     public void configureGetBehaviour(GetBehaviour behaviour) {
-        getBehaviour = behaviour;
+        getBehaviours.add(behaviour);
     }
 
     public void configurePatchBehaviour(PatchBehaviour behaviour) {
-        patchBehaviour = behaviour;
+        patchBehaviours.add(behaviour);
     }
 
     public Credentials getCredentials() {
@@ -28,14 +34,24 @@ public class RestClientMock implements RestClient {
 
     @Override
     public <T> T get(String apiUrl, Class<T> responseClass) throws ApiAccessException {
-        if (getBehaviour == null) throw new ApiAccessException("No GetBehaviour configured.", null);
-        return getBehaviour.get(apiUrl, responseClass);
+        for(GetBehaviour behaviour : getBehaviours) {
+            if (behaviour.condition(apiUrl, responseClass)) {
+                return behaviour.get(apiUrl, responseClass);
+            }
+        }
+
+        throw new ApiAccessException("No suitable GetBehaviour configured.", null);
     }
 
     @Override
     public <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> responseClass) throws ApiAccessException {
-        if (patchBehaviour == null) throw new ApiAccessException("No PatchBehaviour configured.", null);
-        return patchBehaviour.patch(apiUrl, body, responseClass);
+        for(PatchBehaviour behaviour : patchBehaviours) {
+            if (behaviour.condition(apiUrl, body, responseClass)) {
+                return behaviour.patch(apiUrl, body, responseClass);
+            }
+        }
+
+        throw new ApiAccessException("No suitable PatchBehaviour configured.", null);
     }
 
 
@@ -78,12 +94,16 @@ public class RestClientMock implements RestClient {
         }
     }
 
-    public interface GetBehaviour {
-        <T> T get(String apiUrl, Class<T> responseClass) throws ApiAccessException;
+    public static abstract class GetBehaviour {
+        public abstract <T> T get(String apiUrl, Class<T> responseClass) throws ApiAccessException;
+
+        public boolean condition(String apiUrl, Class responseClass) { return true; }
     }
 
-    public interface PatchBehaviour {
-        <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> responseClass)
+    public static abstract class PatchBehaviour {
+        public abstract <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> responseClass)
                 throws ApiAccessException;
+
+        public <TBody>  boolean condition(String apiUrl, TBody body, Class responseClass) { return true; }
     }
 }
