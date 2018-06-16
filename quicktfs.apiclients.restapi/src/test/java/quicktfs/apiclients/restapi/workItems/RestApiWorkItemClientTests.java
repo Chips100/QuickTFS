@@ -2,12 +2,14 @@ package quicktfs.apiclients.restapi.workItems;
 
 import org.junit.Test;
 
+import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.restapi.RestClientMock;
 import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItem;
 import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemClient;
+import quicktfs.apiclients.restapi.authentication.AuthenticatedIdentity;
 
 import static org.junit.Assert.*;
 
@@ -50,6 +52,96 @@ public class RestApiWorkItemClientTests {
         assertEquals("activity", result.getActivity());
         assertEquals("iterationPath", result.getIterationPath());
         assertEquals("state", result.getState());
+    }
+
+    /**
+     * assignToMe should first query the Work Item again to decide
+     * if the "AssignedTo" field should be replaced or added. (Test case for replace).
+     */
+    @Test
+    public void RestApiWorkItemClient_assignToMe_success_replace() throws Exception {
+        RestClientMock restClientMock = new RestClientMock();
+
+        // Work Item is already assigned to someone.
+        RestApiWorkItem workItem = new RestApiWorkItem();
+        workItem.id = 42;
+        workItem.fields = new RestApiWorkItem.RestApiWorkItemFields();
+        workItem.fields.assignedTo = "someoneelse";
+        restClientMock.configureGetBehaviour(new GetWorkItemByIdGetBehaviour(workItem));
+
+        // Set current identity to which the task should be assigned.
+        restClientMock.setCurrentIdentity(new AuthenticatedIdentity(
+                "domain", "accountName",
+                "displayName", null));
+
+        // Watch for patch request with the update.
+        restClientMock.configurePatchBehaviour(new RestClientMock.PatchBehaviour() {
+            @Override
+            public <TBody> boolean condition(String apiUrl, TBody tBody, Class responseClass) {
+                return apiUrl.equals("_apis/wit/workitems/42?api-version=1.0");
+            }
+
+            @Override
+            public <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> tResponseClass) throws ApiAccessException {
+                assertTrue(body instanceof RestApiWorkItemClient.WorkItemUpdateOperation[]);
+
+                RestApiWorkItemClient.WorkItemUpdateOperation updateOperation =
+                        ((RestApiWorkItemClient.WorkItemUpdateOperation[])body)[0];
+
+                assertEquals("replace", updateOperation.op);
+                assertEquals("/fields/System.AssignedTo", updateOperation.path);
+                assertEquals("displayName <domain\\accountName>", updateOperation.value);
+                return null;
+            }
+        });
+
+        WorkItemAssignClient sut = new RestApiWorkItemClient(restClientMock);
+        sut.assignToMe(42);
+    }
+
+    /**
+     * assignToMe should first query the Work Item again to decide
+     * if the "AssignedTo" field should be replaced or added. (Test case for add).
+     */
+    @Test
+    public void RestApiWorkItemClient_assignToMe_success_add() throws Exception {
+        RestClientMock restClientMock = new RestClientMock();
+
+        // Work Item is already assigned to someone.
+        RestApiWorkItem workItem = new RestApiWorkItem();
+        workItem.id = 42;
+        workItem.fields = new RestApiWorkItem.RestApiWorkItemFields();
+        workItem.fields.assignedTo = null;
+        restClientMock.configureGetBehaviour(new GetWorkItemByIdGetBehaviour(workItem));
+
+        // Set current identity to which the task should be assigned.
+        restClientMock.setCurrentIdentity(new AuthenticatedIdentity(
+                "domain", "accountName",
+                "displayName", null));
+
+        // Watch for patch request with the update.
+        restClientMock.configurePatchBehaviour(new RestClientMock.PatchBehaviour() {
+            @Override
+            public <TBody> boolean condition(String apiUrl, TBody tBody, Class responseClass) {
+                return apiUrl.equals("_apis/wit/workitems/42?api-version=1.0");
+            }
+
+            @Override
+            public <TBody, TResponse> TResponse patch(String apiUrl, TBody body, Class<TResponse> tResponseClass) throws ApiAccessException {
+                assertTrue(body instanceof RestApiWorkItemClient.WorkItemUpdateOperation[]);
+
+                RestApiWorkItemClient.WorkItemUpdateOperation updateOperation =
+                        ((RestApiWorkItemClient.WorkItemUpdateOperation[])body)[0];
+
+                assertEquals("add", updateOperation.op);
+                assertEquals("/fields/System.AssignedTo", updateOperation.path);
+                assertEquals("displayName <domain\\accountName>", updateOperation.value);
+                return null;
+            }
+        });
+
+        WorkItemAssignClient sut = new RestApiWorkItemClient(restClientMock);
+        sut.assignToMe(42);
     }
 
     private static class GetWorkItemByIdGetBehaviour extends RestClientMock.GetBehaviour {
