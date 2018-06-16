@@ -4,10 +4,12 @@ import quicktfs.apiclients.contracts.ConfigurationSource;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
+import quicktfs.apiclients.contracts.projects.ProjectClient;
 import quicktfs.apiclients.restapi.RestClient;
 import quicktfs.apiclients.restapi.RestApiLoginClient;
 import quicktfs.apiclients.restapi.RestClientImpl.RestClientImpl;
 import quicktfs.apiclients.restapi.WorkItems.RestApiWorkItemClient;
+import quicktfs.apiclients.restapi.projects.RestApiProjectClient;
 
 /**
  * Stub for an IOC container as a temporary solution
@@ -21,6 +23,7 @@ public class IocContainerStub {
     private static LoginClient loginClient;
     private static WorkItemQueryClient workItemQueryClient;
     private static WorkItemAssignClient workItemAssignClient;
+    private static ProjectClient projectClient;
 
     private synchronized static void init() {
         if (isInitialized) return;
@@ -30,6 +33,7 @@ public class IocContainerStub {
         RestApiWorkItemClient workItemClient = new RestApiWorkItemClient(restClient);
 
         loginClient = new RestApiLoginClient(restClient);
+        projectClient = new RestApiProjectClient(restClient);
         workItemQueryClient = workItemClient;
         workItemAssignClient = workItemClient;
         isInitialized = true;
@@ -53,6 +57,9 @@ public class IocContainerStub {
         }
         if (clazz == WorkItemAssignClient.class) {
             return (T)workItemAssignClient;
+        }
+        if (clazz == ProjectClient.class) {
+            return (T)projectClient;
         }
 
         throw new IllegalArgumentException("Type not registered in IocContainerStub: " + clazz.getName());
