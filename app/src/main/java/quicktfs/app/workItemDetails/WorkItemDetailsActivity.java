@@ -49,13 +49,13 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
         workItemAssignClient = IocContainerStub.getInstance(WorkItemAssignClient.class);
 
         // Get UI references.
-        teamProjectTextView = findViewById(R.id.workItemDetailsTeamProject);
-        iterationPathTextView = findViewById(R.id.workItemDetailsIterationPath);
-        activityTextView = findViewById(R.id.workItemDetailsActivity);
-        stateTextView = findViewById(R.id.workItemDetailsState);
-        titleTextView = findViewById(R.id.workItemDetailsTitle);
-        assignedToTextView = findViewById(R.id.workItemDetailsAssignedTo);
-        descriptionTextView = findViewById(R.id.workItemDetailsDescription);
+        teamProjectTextView = (TextView)findViewById(R.id.workItemDetailsTeamProject);
+        iterationPathTextView = (TextView)findViewById(R.id.workItemDetailsIterationPath);
+        activityTextView = (TextView)findViewById(R.id.workItemDetailsActivity);
+        stateTextView = (TextView)findViewById(R.id.workItemDetailsState);
+        titleTextView = (TextView)findViewById(R.id.workItemDetailsTitle);
+        assignedToTextView = (TextView)findViewById(R.id.workItemDetailsAssignedTo);
+        descriptionTextView = (TextView)findViewById(R.id.workItemDetailsDescription);
 
         progressBar = findViewById(R.id.workItemDetailsProgressbar);
         detailsContainer = findViewById(R.id.workItemDetailsContainer);

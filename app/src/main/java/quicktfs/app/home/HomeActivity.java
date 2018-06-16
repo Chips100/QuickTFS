@@ -23,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // Get UI references.
-        searchWorkItemIdEditText = findViewById(R.id.homeSearchWorkItemId);
+        searchWorkItemIdEditText = (EditText)findViewById(R.id.homeSearchWorkItemId);
     }
 
     /**

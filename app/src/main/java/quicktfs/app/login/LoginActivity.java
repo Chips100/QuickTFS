@@ -43,10 +43,10 @@ public class LoginActivity extends AppCompatActivity {
         loginClient = IocContainerStub.getInstance(LoginClient.class);
 
         // Set up the login form.
-        domainEditText = findViewById(R.id.loginDomain);
-        userNameEditText = findViewById(R.id.loginUserName);
-        passwordEditText = findViewById(R.id.loginPassword);
-        loginButton = findViewById(R.id.loginButton);
+        domainEditText = (EditText)findViewById(R.id.loginDomain);
+        userNameEditText = (EditText)findViewById(R.id.loginUserName);
+        passwordEditText = (EditText)findViewById(R.id.loginPassword);
+        loginButton = (Button)findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.loginProgressBar);
 
         // Restore remembered login data.

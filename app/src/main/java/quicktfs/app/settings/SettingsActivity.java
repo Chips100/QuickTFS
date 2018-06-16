@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         // Get UI references.
-        tfsUrlEditText = findViewById(R.id.settingsTfsUrl);
+        tfsUrlEditText = (EditText)findViewById(R.id.settingsTfsUrl);
 
         configurationSource = AppConfigurationSource.getInstance();
         load();
