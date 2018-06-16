@@ -1,7 +1,5 @@
 package quicktfs.app.workItemDetails;
 
-import android.content.Context;
-
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemAssignClient;
 import quicktfs.app.AsyncApiClientTask;
@@ -9,7 +7,7 @@ import quicktfs.app.AsyncApiClientTask;
 /**
  * A task for assigning a Work Item to the current user asynchronously.
  */
-abstract class AsyncAssignWorkItemToMeTask extends AsyncApiClientTask<AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams, AsyncAssignWorkItemToMeTask.AssignWorkItemToMeResult> {
+abstract class AsyncAssignWorkItemToMeTask extends AsyncApiClientTask<WorkItemDetailsActivity, AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams, AsyncAssignWorkItemToMeTask.AssignWorkItemToMeResult> {
     private final WorkItemAssignClient client;
 
     /**
@@ -17,7 +15,7 @@ abstract class AsyncAssignWorkItemToMeTask extends AsyncApiClientTask<AsyncAssig
      * @param context Context from which the task is started.
      * @param client Client to use for assigning the Work Item.
      */
-    AsyncAssignWorkItemToMeTask(Context context, WorkItemAssignClient client) {
+    AsyncAssignWorkItemToMeTask(WorkItemDetailsActivity context, WorkItemAssignClient client) {
         super(context);
         this.client = client;
     }

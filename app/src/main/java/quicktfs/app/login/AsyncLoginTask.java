@@ -1,7 +1,5 @@
 package quicktfs.app.login;
 
-import android.content.Context;
-
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.LoginClient;
 import quicktfs.app.AsyncApiClientTask;
@@ -9,7 +7,7 @@ import quicktfs.app.AsyncApiClientTask;
 /**
  * A task for performing a login asynchronously.
  */
-abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginParams, AsyncLoginTask.LoginResult> {
+abstract class AsyncLoginTask extends AsyncApiClientTask<LoginActivity, AsyncLoginTask.LoginParams, AsyncLoginTask.LoginResult> {
     private final LoginClient client;
 
     /**
@@ -17,7 +15,7 @@ abstract class AsyncLoginTask extends AsyncApiClientTask<AsyncLoginTask.LoginPar
      * @param context Context from which the task is started.
      * @param client Client to use for logging in.
      */
-    AsyncLoginTask(Context context, LoginClient client) {
+    AsyncLoginTask(LoginActivity context, LoginClient client) {
         super(context);
         this.client = client;
     }

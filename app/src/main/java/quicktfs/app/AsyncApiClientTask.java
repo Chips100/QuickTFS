@@ -4,26 +4,32 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 
 /**
  * Base implementation for asynchronous task that use ApiClients for the TFS Api.
+ * @param <TContext> Type of the context in which the asynchronous task is used.
  * @param <TParams> Type of the parameters of the asynchronous task.
  * @param <TResult> Type of the result of the asynchronous task.
  */
-public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TParams, Void, AsyncApiClientTask.ApiActionResult<TResult>> {
-    private final Context context;
+public abstract class AsyncApiClientTask<TContext extends Context, TParams, TResult>
+        extends AsyncTask<TParams, Void, AsyncApiClientTask.ApiActionResult<TParams, TResult>> {
+
+    // Weak reference to the context of the task.
+    private final WeakReference<TContext> context;
 
     /**
      * Creates an AsyncApiClientTask.
      * @param context Context of the task.
      */
-    protected AsyncApiClientTask(Context context) {
-        this.context = context;
+    protected AsyncApiClientTask(TContext context) {
+        this.context = new WeakReference<>(context);
     }
 
     @Override
-    protected final ApiActionResult<TResult> doInBackground(TParams[] params) {
+    protected final ApiActionResult<TParams, TResult> doInBackground(TParams[] params) {
         // Derived tasks should define a model for the expected parameters
         // which is thereby limited to one model per execution.
         if (params == null || params.length != 1) {
@@ -31,33 +37,42 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
         }
 
         try {
-            return new ApiActionResult<>(doApiAction(params[0]));
+            return new ApiActionResult<>(params[0], doApiAction(params[0]));
         }
         catch(ApiAccessException exception) {
-            return new ApiActionResult<>(exception);
+            return new ApiActionResult<>(params[0], exception);
         }
     }
 
     @Override
-    protected final void onPostExecute(ApiActionResult<TResult> result) {
-        handleComplete();
+    protected final void onPostExecute(ApiActionResult<TParams, TResult> result) {
+        handleComplete(result.getParams());
 
         if (result.wasSuccessful()) {
-            handleSuccess(result.getApiResult());
+            handleSuccess(result.getParams(), result.getApiResult());
         }
         else {
-            handleApiAccessException(result.getApiAccessException());
+            handleApiAccessException(result.getParams(), result.getApiAccessException());
         }
     }
 
     /**
+     * Gets the context of the asynchronous task.
+     * @return The context; or null if it is no longer available.
+     */
+    protected final TContext getContext() { return context.get(); }
+
+    /**
      * Handles exceptions that occur by accessing the TFS Api (e.g. network problems).
+     * @param params Parameters that were passed to the task.
      * @param exception Exception that was thrown.
      */
-    protected void handleApiAccessException(ApiAccessException exception) {
-        Toast.makeText(context, context.getText(R.string.apiError) + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-    }
+    protected void handleApiAccessException(TParams params, ApiAccessException exception) {
+        Context ctx = getContext();
+        if (ctx == null) return;
 
+        Toast.makeText(ctx, ctx.getText(R.string.apiError) + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+    }
 
     /**
      * Should be overridden to define the actual operation with Api access.
@@ -68,39 +83,46 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
 
     /**
      * Should be overridden to define the handling of a successful operation.
+     * @param params Parameters that were passed to the task.
      * @param result Result of the operation.
      */
-    protected abstract void handleSuccess(TResult result);
+    protected abstract void handleSuccess(TParams params, TResult result);
 
     /**
      * Should be overridden to define the handling of completion of the operation.
      * Will be executed in success and failure cases.
+     * @param params Parameters that were passed to the task.
      */
-    protected void handleComplete() { }
+    protected void handleComplete(TParams params) { }
 
     /**
      * Models the result of an action with Api access.
      * This can be either successful (with the result of the action)
      * or failed (without result, but an ApiAccessException).
      */
-    static final class ApiActionResult<TResult> {
+    static final class ApiActionResult<TParams, TResult> {
         private final ApiAccessException exception;
+        private final TParams params;
         private final TResult result;
 
         /**
          * Creates an ApiActionResult for a successful operation.
+         * @param params Parameters that were passed to the task.
          * @param result The result was generated by the operation.
          */
-        ApiActionResult(TResult result) {
+        ApiActionResult(TParams params, TResult result) {
+            this.params = params;
             this.result = result;
             this.exception = null;
         }
 
         /**
          * Creates an ApiActionResult for a failed operation.
+         * @param params Parameters that were passed to the task.
          * @param exception The exception that was thrown during the operation.
          */
-        ApiActionResult(ApiAccessException exception) {
+        ApiActionResult(TParams params, ApiAccessException exception) {
+            this.params = params;
             this.result = null;
             this.exception = exception;
         }
@@ -110,6 +132,12 @@ public abstract class AsyncApiClientTask<TParams, TResult> extends AsyncTask<TPa
          * @return True, if the operation was successful; otherwise false.
          */
         boolean wasSuccessful() { return exception == null; }
+
+        /**
+         * Gets the parameters that were passed to the task.
+         * @return The parameters that were passed to the task.
+         */
+        TParams getParams() { return params; }
 
         /**
          * Gets the result of a successful operation.

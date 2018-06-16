@@ -21,7 +21,7 @@ import quicktfs.utilities.UiUtilities;
  * offers common operations on that Work Item.
  */
 public class WorkItemDetailsActivity extends AppCompatActivity {
-    public static final String INTENT_WORKITEM_ID = "WorkItemId";
+    public static final String INTENT_WORK_ITEM_ID = "WorkItemId";
 
     private int workItemId;
     private WorkItemQueryClient workItemQueryClient;
@@ -63,7 +63,7 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
 
 
         // Read Work Item ID from intent that started the activity.
-        workItemId = getIntent().getIntExtra(INTENT_WORKITEM_ID, 0);
+        workItemId = getIntent().getIntExtra(INTENT_WORK_ITEM_ID, 0);
         loadWorkItem();
     }
 
@@ -73,30 +73,8 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
     public void loadWorkItem() {
         setLoadingState(true);
 
-        new AsyncLoadWorkItemTask(this, workItemQueryClient) {
-            @Override
-            protected void handleComplete() {
-                WorkItemDetailsActivity.this.setLoadingState(false);
-            }
-
-            @Override
-            protected void handleSuccess(LoadWorkItemResult result) {
-                WorkItemDetailsActivity.this.displayWorkItem(result.getWorkItem());
-            }
-
-            @Override
-            protected void handleApiAccessException(ApiAccessException exception) {
-                // Special handling when Work Item was not found.
-                if (ExceptionUtilities.findCauseOfType(exception, EntityNotFoundException.class) != null) {
-                    WorkItemDetailsActivity.this.detailsContainer.setVisibility(View.GONE);
-                    WorkItemDetailsActivity.this.notFoundContainer.setVisibility(View.VISIBLE);
-                    return;
-                }
-
-                // Otherwise, fall back to default handling.
-                super.handleApiAccessException(exception);
-            }
-        }.execute(new AsyncLoadWorkItemTask.LoadWorkItemParams(workItemId));
+        new LoadWorkItemTask(this, workItemQueryClient)
+                .execute(new AsyncLoadWorkItemTask.LoadWorkItemParams(workItemId));
     }
 
     /**
@@ -131,17 +109,67 @@ public class WorkItemDetailsActivity extends AppCompatActivity {
      */
     public void assignToMe(View view) {
         setLoadingState(true);
-        new AsyncAssignWorkItemToMeTask(this, workItemAssignClient) {
-            @Override
-            protected void handleComplete() {
-                WorkItemDetailsActivity.this.setLoadingState(false);
+        new AssignToMeTask(this, workItemAssignClient)
+                .execute(new AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams(workItemId));
+    }
+
+    private static class LoadWorkItemTask extends AsyncLoadWorkItemTask {
+        public LoadWorkItemTask(WorkItemDetailsActivity context, WorkItemQueryClient client) {
+            super(context, client);
+        }
+
+        @Override
+        protected void handleComplete(LoadWorkItemParams params) {
+            WorkItemDetailsActivity context = getContext();
+            if (context == null) return;
+
+            context.setLoadingState(false);
+        }
+
+        @Override
+        protected void handleSuccess(LoadWorkItemParams params, LoadWorkItemResult result) {
+            WorkItemDetailsActivity context = getContext();
+            if (context == null) return;
+
+            context.displayWorkItem(result.getWorkItem());
+        }
+
+        @Override
+        protected void handleApiAccessException(LoadWorkItemParams params, ApiAccessException exception) {
+            WorkItemDetailsActivity context = getContext();
+            if (context == null) return;
+
+            // Special handling when Work Item was not found.
+            if (ExceptionUtilities.findCauseOfType(exception, EntityNotFoundException.class) != null) {
+                context.detailsContainer.setVisibility(View.GONE);
+                context.notFoundContainer.setVisibility(View.VISIBLE);
+                return;
             }
 
-            @Override
-            protected void handleSuccess(AssignWorkItemToMeResult assignWorkItemToMeResult) {
-                WorkItemDetailsActivity context = WorkItemDetailsActivity.this;
-                Toast.makeText(context, context.getString(R.string.workItemDetailsAssignMeSuccessMessage), Toast.LENGTH_LONG).show();
-            }
-        }.execute(new AsyncAssignWorkItemToMeTask.AssignWorkItemToMeParams(workItemId));
+            // Otherwise, fall back to default handling.
+            super.handleApiAccessException(params, exception);
+        }
+    }
+
+    private static class AssignToMeTask extends AsyncAssignWorkItemToMeTask {
+        public AssignToMeTask(WorkItemDetailsActivity context, WorkItemAssignClient client) {
+            super(context, client);
+        }
+
+        @Override
+        protected void handleComplete(AssignWorkItemToMeParams params) {
+            WorkItemDetailsActivity context = getContext();
+            if (context == null) return;
+
+            context.setLoadingState(false);
+        }
+
+        @Override
+        protected void handleSuccess(AssignWorkItemToMeParams params, AssignWorkItemToMeResult assignWorkItemToMeResult) {
+            WorkItemDetailsActivity context = getContext();
+            if (context == null) return;
+
+            Toast.makeText(context, context.getString(R.string.workItemDetailsAssignMeSuccessMessage), Toast.LENGTH_LONG).show();
+        }
     }
 }

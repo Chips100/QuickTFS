@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity {
             int workItemId = Integer.parseInt(searchWorkItemIdEditText.getText().toString());
 
             Intent intent = new Intent(this, WorkItemDetailsActivity.class);
-            intent.putExtra(WorkItemDetailsActivity.INTENT_WORKITEM_ID, workItemId);
+            intent.putExtra(WorkItemDetailsActivity.INTENT_WORK_ITEM_ID, workItemId);
             startActivity(intent);
         }
         catch(NumberFormatException exception) {

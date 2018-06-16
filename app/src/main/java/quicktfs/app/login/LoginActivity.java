@@ -83,25 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         setLoadingState(true);
-        new AsyncLoginTask(this, loginClient) {
-            @Override
-            protected void handleComplete() {
-                LoginActivity.this.setLoadingState(false);
-            }
-
-            @Override
-            protected void handleSuccess(LoginResult result) {
-                LoginActivity context = LoginActivity.this;
-
-                if (!result.wasSuccessful()) {
-                    Toast.makeText(context, context.getString(R.string.loginFailedMessage), Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                loginStore.storeLoginData(loginParams.getDomain(), loginParams.getUsername(), loginParams.getPassword());
-                context.onLoginSuccess();
-            }
-        }.execute(loginParams);
+        new LoginTask(this, loginClient).execute(loginParams);
     }
 
     private void onLoginSuccess() {
@@ -124,6 +106,34 @@ public class LoginActivity extends AppCompatActivity {
         // https://stackoverflow.com/questions/7407851/edittext-setfocusablefalse-cant-be-set-to-true
         if (!isLoading) {
             editText.setFocusableInTouchMode(true);
+        }
+    }
+
+    private static class LoginTask extends AsyncLoginTask {
+        public LoginTask(LoginActivity context, LoginClient client) {
+            super(context, client);
+        }
+
+        @Override
+        protected void handleComplete(LoginParams params) {
+            LoginActivity context = getContext();
+            if(context == null) return;
+
+            context.setLoadingState(false);
+        }
+
+        @Override
+        protected void handleSuccess(LoginParams params, LoginResult result) {
+            LoginActivity context = getContext();
+            if (context == null) return;
+
+            if (!result.wasSuccessful()) {
+                Toast.makeText(context, context.getString(R.string.loginFailedMessage), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            context.loginStore.storeLoginData(params.getDomain(), params.getUsername(), params.getPassword());
+            context.onLoginSuccess();
         }
     }
 }

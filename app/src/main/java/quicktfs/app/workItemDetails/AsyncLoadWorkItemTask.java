@@ -1,7 +1,5 @@
 package quicktfs.app.workItemDetails;
 
-import android.content.Context;
-
 import quicktfs.apiclients.contracts.exceptions.ApiAccessException;
 import quicktfs.apiclients.contracts.WorkItemDetailsDto;
 import quicktfs.apiclients.contracts.WorkItemQueryClient;
@@ -10,7 +8,7 @@ import quicktfs.app.AsyncApiClientTask;
 /**
  * A task for loading the details of a Work Item asynchronously.
  */
-abstract class AsyncLoadWorkItemTask extends AsyncApiClientTask<AsyncLoadWorkItemTask.LoadWorkItemParams, AsyncLoadWorkItemTask.LoadWorkItemResult> {
+abstract class AsyncLoadWorkItemTask extends AsyncApiClientTask<WorkItemDetailsActivity, AsyncLoadWorkItemTask.LoadWorkItemParams, AsyncLoadWorkItemTask.LoadWorkItemResult> {
     private final WorkItemQueryClient client;
 
     /**
@@ -18,7 +16,7 @@ abstract class AsyncLoadWorkItemTask extends AsyncApiClientTask<AsyncLoadWorkIte
      * @param context Context from which the task is started.
      * @param client Client to use for loading the Work Item.
      */
-    AsyncLoadWorkItemTask(Context context, WorkItemQueryClient client) {
+    AsyncLoadWorkItemTask(WorkItemDetailsActivity context, WorkItemQueryClient client) {
         super(context);
         this.client = client;
     }
