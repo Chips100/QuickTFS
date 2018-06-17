@@ -20,16 +20,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".home.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".workItemDetails.WorkItemDetailsActivity"
             android:label="@string/title_activity_work_item_details"
             android:parentActivityName=".home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".settings.SettingsActivity"></activity>
+
+        <activity
+            android:name=".projectHome.ProjectHomeActivity"
+            android:label="@string/title_activity_home_project"
+            android:parentActivityName=".home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".settings.SettingsActivity" />
     </application>
 
 </manifest>

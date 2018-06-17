@@ -24,4 +24,7 @@
     <string name="workItemDetailsAssignMeSuccessMessage">Work Item successfully assigned.</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="workItemDetailsNotFoundMessage">The Work Item does not exist.</string>
+
+    <!-- Strings related to project views. -->
+    <string name="title_activity_home_project">Project</string>
 </resources>
